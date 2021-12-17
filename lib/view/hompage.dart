@@ -27,13 +27,14 @@ class HomePage_State extends State<HomePage> {
     return AppBar(
       leading: GestureDetector(
         onTap:(){
+          print ("tapped");
           ThemeService().switchTheme();
 
         },
-        child: Icon(Icons.nightlight_round, size: 20, ),
+        child: const Icon(Icons.nightlight_round, size: 20, ),
         ),
 
-        actions:[
+        actions:const [
           Icon(Icons.person, size: 20, ),
 
           SizedBox(width: 20, ), 
