@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:project/view/hompage.dart';
+import 'package:project/view/theme.dart';
 
 void main() {
   runApp(const MyApp());
@@ -12,16 +13,10 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,
-      // il permet de changer les couleur du background etc.
-      theme: ThemeData(
-        primaryColor: Colors.red,
-        brightness: Brightness.light
-      ),
-      darkTheme: ThemeData(
-        primaryColor: Colors.red,
-        brightness: Brightness.light
+      
+      theme: Themes.light,
+      themeMode: ThemeMode.light,
 
-      ),
       home: const HomePage()
     );
   }

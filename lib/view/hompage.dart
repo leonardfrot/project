@@ -12,7 +12,7 @@ class HomePage_State extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(),
+        appBar: _appBar(),
         // ignore: prefer_const_literals_to_create_immutables
         body: Column(children: [
           const Text(
@@ -20,5 +20,23 @@ class HomePage_State extends State<HomePage> {
             style: TextStyle(fontSize: 13),
           )
         ]));
+  }
+
+  _appBar(){
+    return AppBar(
+      leading: GestureDetector(
+        onTap:(){
+
+        },
+        child: Icon(Icons.nightlight_round, size: 20, ),
+        ),
+
+        actions:[
+          Icon(Icons.person, size: 20, ),
+
+          SizedBox(width: 20, ), 
+        
+        ],
+      );
   }
 }
