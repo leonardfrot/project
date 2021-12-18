@@ -30,7 +30,7 @@ class HomePage_State extends State<HomePage> {
       leading: GestureDetector(
         onTap:(){
           
-          print ("tapped");
+          print ("tappedd");
           ThemeService().switchTheme();
         
 
