@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import 'package:project/services/theme_service.dart';
 
 class HomePage extends StatefulWidget {
@@ -10,6 +11,7 @@ class HomePage extends StatefulWidget {
 
 // ignore: camel_case_types
 class HomePage_State extends State<HomePage> {
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,8 +29,10 @@ class HomePage_State extends State<HomePage> {
     return AppBar(
       leading: GestureDetector(
         onTap:(){
+          
           print ("tapped");
           ThemeService().switchTheme();
+        
 
         },
         child: const Icon(Icons.nightlight_round, size: 20, ),
