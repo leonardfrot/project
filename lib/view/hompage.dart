@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 import 'package:project/services/theme_service.dart';
+import 'package:project/ui/floatingActionButton.dart';
+import 'package:project/view/theme.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -18,11 +21,28 @@ class HomePage_State extends State<HomePage> {
         appBar: _appBar(),
         // ignore: prefer_const_literals_to_create_immutables
         body: Column(children: [
-          const Text(
-            "test fonctionnement",
-            style: TextStyle(fontSize: 13),
-          )
-        ]));
+          Row(children: [
+            Container(
+              margin: const EdgeInsets.symmetric(horizontal: 20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                
+                children: [
+                Text(DateFormat.yMMMMd().format(DateTime.now(),
+                
+                ), style: subHeadingStyle,
+                
+                ),
+                Text("Mes Notes",
+                style: HeadingStyle)
+              ],
+               ),
+            )
+          ],)
+         ]),
+         floatingActionButton: MyFloatiatingActionButton(label: "+ ajouter", onTap: ()=>null ),
+
+          );
   }
 
   _appBar(){
