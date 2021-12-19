@@ -5,6 +5,9 @@ import 'package:intl/intl.dart';
 import 'package:project/services/theme_service.dart';
 import 'package:get/get.dart';
 import 'package:project/ui/input.dart';
+import 'package:project/view/theme.dart';
+
+import 'floatingActionButton.dart';
 
 class AddNotePage extends StatefulWidget {
   const AddNotePage({Key? key}) : super(key: key);
@@ -16,6 +19,8 @@ class AddNotePage extends StatefulWidget {
 class _AddNotePageState extends State<AddNotePage> {
   DateTime _selectedDate = DateTime.now();
   late String _alertTime = DateFormat("hh:mm:a").format(DateTime.now()).toString();
+  int _selectedColor = 0;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -55,7 +60,19 @@ class _AddNotePageState extends State<AddNotePage> {
                   icon: Icon(Icons.access_time_rounded)
                 )
                 
-                )
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                  _colorPalette(),
+                  MyFloatiatingActionButton(label: "Créer", onTap: ()=> null)
+                 
+                  
+                ],)
+
+
+
+
             ],
           )),
         ));
@@ -128,6 +145,37 @@ class _AddNotePageState extends State<AddNotePage> {
         hour: int.parse(_alertTime.split(":")[0]), 
         minute: int.parse(_alertTime.split(":")[1].split(" ")[0]) 
         ));
+  }
+
+
+  _colorPalette(){
+    return Column(children: [
+                    Text("Couleur", 
+                    style: subHeadingStyle,
+                    ),
+                    Wrap(children: List<Widget>.generate(3, 
+                      (int index){
+                        return GestureDetector(onTap: (){
+                          setState(() {
+                            _selectedColor = index;
+                          });
+                        
+                          
+
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: CircleAvatar(
+                            radius: 14,
+                            backgroundColor: index==0?Colors.blue: index==1?Colors.pink:Colors.yellow,
+                            child: _selectedColor==index?Icon(Icons.done, 
+                            color: Colors.white, 
+                            size: 16):Container()
+                          ),
+                        ));
+
+                      },),)
+                  ],);
   }
 
 }
