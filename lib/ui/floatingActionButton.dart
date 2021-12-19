@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:project/ui/add_note_page.dart';
+import 'package:get/get.dart';
 
 class MyFloatiatingActionButton extends StatelessWidget {
 
@@ -11,7 +13,7 @@ class MyFloatiatingActionButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: ()=> onTap,
+      onTap: ()=> Get.to(AddNotePage()),
       child: Container(
         width: 100,
         height:  60,

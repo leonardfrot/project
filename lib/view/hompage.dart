@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
 import 'package:project/services/theme_service.dart';
+import 'package:project/ui/add_note_page.dart';
 import 'package:project/ui/floatingActionButton.dart';
 import 'package:project/view/theme.dart';
 
@@ -40,7 +42,7 @@ class HomePage_State extends State<HomePage> {
             )
           ],)
          ]),
-         floatingActionButton: MyFloatiatingActionButton(label: "+ ajouter", onTap: ()=>null ),
+         floatingActionButton: MyFloatiatingActionButton(label: "+ ajouter", onTap: ()=> Get.to(const AddNotePage()) ),
 
           );
   }
