@@ -1,7 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:project/services/theme_service.dart';
 import 'package:get/get.dart';
+import 'package:project/ui/input.dart';
 
 class AddNotePage extends StatefulWidget {
   const AddNotePage({Key? key}) : super(key: key);
@@ -16,39 +18,35 @@ class _AddNotePageState extends State<AddNotePage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: _appBar(),
-        body: Container(margin: EdgeInsets.symmetric(horizontal: 20),
-        
-          child: Column(children: [
-          Container(
-              decoration: BoxDecoration(border: Border.all()),
-              child:  TextFormField(
-                  decoration: InputDecoration(hintText: 'Titre'))),
-                  SizedBox(height: 10,),
-          Expanded(
-            child: Container(
-                decoration: BoxDecoration(border: Border.all()),
-                child: TextFormField(
-                  maxLines: null,
-                  expands : true,
-                    decoration: InputDecoration(hintText: 'Taper le texte ici'))),
-          ),
-          SizedBox(height: 10,),
+        body: Container(
+          padding: const EdgeInsets.only(left: 20, right: 20),
+          child: SingleChildScrollView(
+              child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              MyFromular(
+                hint: "Title",
+                height: 52,
+              ),
+              MyFromular(
+                hint: "Notes",
+                height: 400,
+              ),
+              MyFromular(
+                hint: DateFormat.yMd().format(_selectedDate),
+                height: 52,
+                widget: IconButton(
+                  icon: Icon(Icons.calendar_today_outlined),
+                  onPressed: () {
+                    _getDateFromUser();
 
-          Container(
-            decoration: BoxDecoration(border: Border.all()),
-              child:  TextFormField(
-                  readOnly: widget ==null?false: true,
-                  decoration: InputDecoration(hintText: 'Titre'))),
-                  SizedBox(height: 10,),
 
-          
-           
-                  
-        ]),
-        
-        ),
-        );
-        
+                  },
+                ),
+              )
+            ],
+          )),
+        ));
   }
 
   _appBar() {
@@ -72,5 +70,13 @@ class _AddNotePageState extends State<AddNotePage> {
         ),
       ],
     );
+  }
+
+  _getDateFromUser() async {
+    DateTime? _pickerDate = await showDatePicker(
+        context: context,
+        initialDate: DateTime.now(),
+        firstDate: DateTime(2015),
+        lastDate: DateTime(2022)) ;
   }
 }
