@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:intl/intl.dart';
 import 'package:project/services/theme_service.dart';
 import 'package:get/get.dart';
@@ -14,6 +15,7 @@ class AddNotePage extends StatefulWidget {
 
 class _AddNotePageState extends State<AddNotePage> {
   DateTime _selectedDate = DateTime.now();
+  late String _alertTime = DateFormat("hh:mm:a").format(DateTime.now()).toString();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,11 +26,11 @@ class _AddNotePageState extends State<AddNotePage> {
               child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              MyFromular(
+              const MyFromular(
                 hint: "Title",
                 height: 52,
               ),
-              MyFromular(
+              const MyFromular(
                 hint: "Notes",
                 height: 400,
               ),
@@ -36,14 +38,24 @@ class _AddNotePageState extends State<AddNotePage> {
                 hint: DateFormat.yMd().format(_selectedDate),
                 height: 52,
                 widget: IconButton(
-                  icon: Icon(Icons.calendar_today_outlined),
+                  icon: const Icon(Icons.calendar_today_outlined),
                   onPressed: () {
                     _getDateFromUser();
-
-
                   },
                 ),
-              )
+              ),
+              MyFromular(
+                hint: _alertTime, 
+                height: 52,
+                widget: IconButton(
+                  onPressed: (){
+                    _getTimeFromUser();
+
+                  },
+                  icon: Icon(Icons.access_time_rounded)
+                )
+                
+                )
             ],
           )),
         ));
@@ -77,6 +89,45 @@ class _AddNotePageState extends State<AddNotePage> {
         context: context,
         initialDate: DateTime.now(),
         firstDate: DateTime(2015),
-        lastDate: DateTime(2022)) ;
+        lastDate: DateTime(2100));
+
+    if (_pickerDate != null) {
+      setState(() {
+        _selectedDate = _pickerDate;
+      });
+    } else {
+      print("veuillez sélectionner une date");
+    }
+
+    
   }
+
+  _getTimeFromUser() async {
+    var pickedTime = await _showTimePicker();
+    String _formatedTime = pickedTime.format(context);
+    if(pickedTime == null){
+      print("pas de temps");
+    }else {
+      setState(() {
+        _alertTime = _formatedTime;
+      });
+      
+      
+    };
+    }
+    
+   
+  
+
+  _showTimePicker(){
+    return showTimePicker(
+      initialEntryMode: TimePickerEntryMode.input,
+      context: context, 
+      initialTime: TimeOfDay(
+        // on adapte au pattern d'alert time
+        hour: int.parse(_alertTime.split(":")[0]), 
+        minute: int.parse(_alertTime.split(":")[1].split(" ")[0]) 
+        ));
+  }
+
 }
