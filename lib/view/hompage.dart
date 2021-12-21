@@ -42,7 +42,7 @@ class HomePage_State extends State<HomePage> {
             )
           ],)
          ]),
-         floatingActionButton: MyFloatiatingActionButton(label: "+ ajouter", onTap: ()=> Get.to(const AddNotePage()) ),
+         floatingActionButton: MyFloatiatingActionButton(label: "+ ajouter", onTap: ()=> Get.to(AddNotePage()) ),
 
           );
   }

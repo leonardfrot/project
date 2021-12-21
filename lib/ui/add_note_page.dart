@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:project/services/theme_service.dart';
 import 'package:get/get.dart';
 import 'package:project/ui/input.dart';
+import 'package:project/view/hompage.dart';
 import 'package:project/view/theme.dart';
 
 import 'floatingActionButton.dart';
@@ -17,8 +18,12 @@ class AddNotePage extends StatefulWidget {
 }
 
 class _AddNotePageState extends State<AddNotePage> {
+  final TextEditingController titleController = TextEditingController();
+  final TextEditingController noteController = TextEditingController();
+
   DateTime _selectedDate = DateTime.now();
-  late String _alertTime = DateFormat("hh:mm:a").format(DateTime.now()).toString();
+  late String _alertTime =
+      DateFormat("hh:mm:a").format(DateTime.now()).toString();
   int _selectedColor = 0;
 
   @override
@@ -31,12 +36,14 @@ class _AddNotePageState extends State<AddNotePage> {
               child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const MyFromular(
+              MyFromular(
                 hint: "Title",
+                controller: titleController,
                 height: 52,
               ),
-              const MyFromular(
+              MyFromular(
                 hint: "Notes",
+                controller: noteController,
                 height: 400,
               ),
               MyFromular(
@@ -50,29 +57,36 @@ class _AddNotePageState extends State<AddNotePage> {
                 ),
               ),
               MyFromular(
-                hint: _alertTime, 
-                height: 52,
-                widget: IconButton(
-                  onPressed: (){
-                    _getTimeFromUser();
-
-                  },
-                  icon: Icon(Icons.access_time_rounded)
-                )
-                
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
+                  hint: _alertTime,
+                  height: 52,
+                  widget: IconButton(
+                      onPressed: () {
+                        _getTimeFromUser();
+                      },
+                      icon: Icon(Icons.access_time_rounded))),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
                   _colorPalette(),
-                  MyFloatiatingActionButton(label: "Créer", onTap: ()=> null)
-                 
-                  
-                ],)
-
-
-
-
+                  GestureDetector(
+                    onTap: () => _validateDate(),
+                    child: Container(
+                        width: 60,
+                        height: 60,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(40),
+                            color: Colors.blue),
+                        child: Align(
+                          alignment: Alignment.center,
+                          child: Text(
+                            "Créer",
+                            style: TextStyle(color: Colors.white),
+                            textAlign: TextAlign.center,
+                          ),
+                        )),
+                  )
+                ],
+              )
             ],
           )),
         ));
@@ -115,67 +129,80 @@ class _AddNotePageState extends State<AddNotePage> {
     } else {
       print("veuillez sélectionner une date");
     }
-
-    
   }
 
   _getTimeFromUser() async {
     var pickedTime = await _showTimePicker();
     String _formatedTime = pickedTime.format(context);
-    if(pickedTime == null){
+    if (pickedTime == null) {
       print("pas de temps");
-    }else {
+    } else {
       setState(() {
         _alertTime = _formatedTime;
       });
-      
-      
-    };
     }
-    
-   
-  
+    ;
+  }
 
-  _showTimePicker(){
+  _showTimePicker() {
     return showTimePicker(
-      initialEntryMode: TimePickerEntryMode.input,
-      context: context, 
-      initialTime: TimeOfDay(
-        // on adapte au pattern d'alert time
-        hour: int.parse(_alertTime.split(":")[0]), 
-        minute: int.parse(_alertTime.split(":")[1].split(" ")[0]) 
-        ));
+        initialEntryMode: TimePickerEntryMode.input,
+        context: context,
+        initialTime: TimeOfDay(
+            // on adapte au pattern d'alert time
+            hour: int.parse(_alertTime.split(":")[0]),
+            minute: int.parse(_alertTime.split(":")[1].split(" ")[0])));
   }
 
-
-  _colorPalette(){
-    return Column(children: [
-                    Text("Couleur", 
-                    style: subHeadingStyle,
-                    ),
-                    Wrap(children: List<Widget>.generate(3, 
-                      (int index){
-                        return GestureDetector(onTap: (){
-                          setState(() {
-                            _selectedColor = index;
-                          });
-                        
-                          
-
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: CircleAvatar(
-                            radius: 14,
-                            backgroundColor: index==0?Colors.blue: index==1?Colors.pink:Colors.yellow,
-                            child: _selectedColor==index?Icon(Icons.done, 
-                            color: Colors.white, 
-                            size: 16):Container()
-                          ),
-                        ));
-
-                      },),)
-                  ],);
+  _validateDate() {
+    print("veuillez sélectionner une date");
+    if (titleController.text.isEmpty || noteController.text.isEmpty) {
+      
+      Get.snackbar(
+        "Required",
+        "Certain champs sont vide",
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+      );
+    } else {
+      Get.back();
+    }
   }
 
+  _colorPalette() {
+    return Column(
+      children: [
+        Text(
+          "Couleur",
+          style: subHeadingStyle,
+        ),
+        Wrap(
+          children: List<Widget>.generate(
+            3,
+            (int index) {
+              return GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      _selectedColor = index;
+                    });
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: CircleAvatar(
+                        radius: 14,
+                        backgroundColor: index == 0
+                            ? Colors.blue
+                            : index == 1
+                                ? Colors.pink
+                                : Colors.yellow,
+                        child: _selectedColor == index
+                            ? Icon(Icons.done, color: Colors.white, size: 16)
+                            : Container()),
+                  ));
+            },
+          ),
+        )
+      ],
+    );
+  }
 }

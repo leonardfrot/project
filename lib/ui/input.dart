@@ -6,12 +6,14 @@ class MyFromular extends StatelessWidget {
   final TextEditingController? controller;
   final Widget? widget;
   final double height;
+  
 
   const MyFromular({ Key? key, required this.hint, this.controller, this.widget, required this.height}) : super(key: key);
   
 
   @override
   Widget build(BuildContext context) {
+    final TextEditingController _textEditingController = TextEditingController();
     return Container(
       child: Column(children: [
           widget== null?Container(): Container(child: widget),
@@ -30,6 +32,7 @@ class MyFromular extends StatelessWidget {
                   autofocus: false,
                   cursorColor: Colors.blue,
                   controller: controller,
+                  
                   decoration: InputDecoration(hintText: hint),
 
                   ),

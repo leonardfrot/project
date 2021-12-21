@@ -6,9 +6,9 @@ import 'package:get/get.dart';
 class MyFloatiatingActionButton extends StatelessWidget {
 
   final String label;
-  final Function onTap;
+  Function onTap;
 
-  const MyFloatiatingActionButton({ Key? key, required this.label, required this.onTap }) : super(key: key);
+  MyFloatiatingActionButton({ Key? key, required this.label, required this.onTap }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
