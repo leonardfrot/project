@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:project/authentication/authentication.dart';
 
 import 'package:project/services/theme_service.dart';
 import 'package:project/ui/add_note_page.dart';
@@ -8,7 +9,8 @@ import 'package:project/ui/floatingActionButton.dart';
 import 'package:project/view/theme.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+  const HomePage({Key? key, this.loginState}) : super(key: key);
+  final ApplicationLoginState? loginState;
 
   @override
   HomePage_State createState() => HomePage_State();
@@ -16,6 +18,8 @@ class HomePage extends StatefulWidget {
 
 // ignore: camel_case_types
 class HomePage_State extends State<HomePage> {
+  
+
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +46,7 @@ class HomePage_State extends State<HomePage> {
             )
           ],)
          ]),
-         floatingActionButton: MyFloatiatingActionButton(label: "+ ajouter", onTap: ()=> Get.to(AddNotePage()) ),
+         floatingActionButton: MyFloatiatingActionButton(label: "+ ajouter", onTap: ()=> Get.to(AddNotePage )) ,
 
           );
   }

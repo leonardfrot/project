@@ -1,6 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:project/authentication/widget.dart';
+import 'package:get/get.dart';
+import 'package:project/services/theme_service.dart';
+import 'package:project/ui/add_note_page.dart';
+import 'package:project/ui/floatingActionButton.dart';
+import 'package:project/ui/show_notes.dart';
+import 'package:project/view/hompage.dart';
+import 'package:project/view/theme.dart';
 
-import 'widgets.dart';
+
+
 
 enum ApplicationLoginState {
   loggedOut,
@@ -92,19 +102,24 @@ class Authentication extends StatelessWidget {
           },
         );
       case ApplicationLoginState.loggedIn:
-        return Row(
+          
+         return Row(
           children: [
             Padding(
               padding: const EdgeInsets.only(left: 24, bottom: 8),
               child: StyledButton(
                 onPressed: () {
-                  signOut();
+                  
+                  Get.to(HomePage(loginState: loginState,));
                 },
-                child: const Text('LOGOUT'),
+                child: const Text('Connecter au note app'),
               ),
             ),
           ],
         );
+        
+      
+    
       default:
         return Row(
           children: const [
@@ -426,4 +441,25 @@ class _PasswordFormState extends State<PasswordForm> {
       ],
     );
   }
+}
+_appBar(){
+    return AppBar(
+      leading: GestureDetector(
+        onTap:(){
+          
+          print ("tapped");
+          ThemeService().switchTheme();
+        
+
+        },
+        child: const Icon(Icons.nightlight_round, size: 20, ),
+        ),
+
+        actions:const [
+          Icon(Icons.person, size: 20, ),
+
+          SizedBox(width: 20, ), 
+        
+        ],
+      );
 }

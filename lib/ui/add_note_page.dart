@@ -1,7 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:intl/intl.dart';
+import 'package:project/authentication/authentication.dart';
 import 'package:project/services/theme_service.dart';
 import 'package:get/get.dart';
 import 'package:project/ui/input.dart';
@@ -11,7 +13,8 @@ import 'package:project/view/theme.dart';
 import 'floatingActionButton.dart';
 
 class AddNotePage extends StatefulWidget {
-  const AddNotePage({Key? key}) : super(key: key);
+  const AddNotePage({Key? key, this.loginState}) : super(key: key);
+  final ApplicationLoginState? loginState;
 
   @override
   State<AddNotePage> createState() => _AddNotePageState();
@@ -154,7 +157,7 @@ class _AddNotePageState extends State<AddNotePage> {
             minute: int.parse(_alertTime.split(":")[1].split(" ")[0])));
   }
 
-  _validateDate() {
+  _validateDate() async {
     print("veuillez sélectionner une date");
     if (titleController.text.isEmpty || noteController.text.isEmpty) {
       
@@ -165,6 +168,9 @@ class _AddNotePageState extends State<AddNotePage> {
         backgroundColor: Colors.red,
       );
     } else {
+
+      await addNoteToGuest();
+
       Get.back();
     }
   }
@@ -204,5 +210,17 @@ class _AddNotePageState extends State<AddNotePage> {
         )
       ],
     );
+  }
+
+  Future<DocumentReference>? addNoteToGuest(){
+    return FirebaseFirestore.instance.collection('test').add({
+      'test' : "test"
+    });
+
+    
+
+
+
+    
   }
 }
