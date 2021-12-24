@@ -28,22 +28,36 @@ class HomePage_State extends State<HomePage> {
         // ignore: prefer_const_literals_to_create_immutables
         body:
         
-        Container(
-          child: GridView.builder(gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2), itemCount: 10,
-                                    itemBuilder: (_,index){
-                                      return Container(
-                                        margin: EdgeInsets.all(10),
-                                        height: 150,
-                                        color: Colors.grey
-                                      );
-                                    }),
-        )
+        
+          Column(
+            children: [
+                Text(DateFormat.yMMMMd().format(DateTime.now(),
+                
+                ), style: subHeadingStyle,
+                
+                ),
+                Text("Mes Notes",
+                style: HeadingStyle), 
+
+              Flexible(
+                child: GridView.builder(gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2), itemCount: 10,
+                                          itemBuilder: (_,index){
+                                            return Container(
+                                              margin: EdgeInsets.all(10),
+                                              height: 150,
+                                              color: Colors.grey
+                                            );
+                                          }),
+              ),
+            ],
+          ),
+        
 
 
 
 
 
-         ,
+         
 
          
 
