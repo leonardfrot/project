@@ -213,8 +213,12 @@ class _AddNotePageState extends State<AddNotePage> {
   }
 
   Future<DocumentReference>? addNoteToGuest(){
-    return FirebaseFirestore.instance.collection('test').add({
-      'test' : "test"
+    return FirebaseFirestore.instance.collection('Notes').add({
+      'title' : titleController.text,
+      'note' : noteController.text,
+      'date' : _selectedDate,
+      'time' : _alertTime
+
     });
 
     

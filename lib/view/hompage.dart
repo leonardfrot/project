@@ -26,30 +26,35 @@ class HomePage_State extends State<HomePage> {
     return Scaffold(
         appBar: _appBar(),
         // ignore: prefer_const_literals_to_create_immutables
-        body: Column(children: [
-          Row(children: [
-            Container(
-              margin: const EdgeInsets.symmetric(horizontal: 20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                
-                children: [
-                Text(DateFormat.yMMMMd().format(DateTime.now(),
-                
-                ), style: subHeadingStyle,
-                
-                ),
-                Text("Mes Notes",
-                style: HeadingStyle)
-              ],
-               ),
-            )
-          ],)
-         ]),
+        body:
+        
+        Container(
+          child: GridView.builder(gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2), itemCount: 10,
+                                    itemBuilder: (_,index){
+                                      return Container(
+                                        margin: EdgeInsets.all(10),
+                                        height: 150,
+                                        color: Colors.grey
+                                      );
+                                    }),
+        )
+
+
+
+
+
+         ,
+
+         
+
+         
          floatingActionButton: MyFloatiatingActionButton(label: "+ ajouter", onTap: ()=> Get.to(AddNotePage )) ,
 
           );
   }
+
+  
+
 
   _appBar(){
     return AppBar(
