@@ -56,6 +56,7 @@ class _AddNotePageState extends State<AddNotePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        backgroundColor: Colors.black,
         appBar: _appBar(),
         body: Container(
           padding: const EdgeInsets.only(left: 20, right: 20),
@@ -200,7 +201,9 @@ class _AddNotePageState extends State<AddNotePage> {
       'title': titleController.text,
       'note': noteController.text,
       'date': _selectedDate,
-      'time': _alertTime
+      'time': _alertTime,
+      'color': _selectedColor
+      
     });
     Get.back();
   }
@@ -252,7 +255,8 @@ class _AddNotePageState extends State<AddNotePage> {
       'title': titleController.text,
       'note': noteController.text,
       'date': _selectedDate,
-      'time': _alertTime
+      'time': _alertTime,
+      'color' : _selectedColor
     });
   }
 }

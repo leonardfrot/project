@@ -54,7 +54,7 @@ class HomePage_State extends State<HomePage> {
                           child: Container(
                               margin: EdgeInsets.all(10),
                               height: 150,
-                              color: Colors.grey,
+                              color: snapshot.data!.docs[index].get('color') == 0? Colors.blue: snapshot.data!.docs[index].get('color') == 1? Colors.pink: Colors.yellow,
                               child: Column(
                                 children: [
                                   Text(snapshot.data!.docs[index].get('title')),
