@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:project/authentication/authentication.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:project/services/theme_service.dart';
 import 'package:project/ui/add_note_page.dart';
@@ -11,6 +12,7 @@ import 'package:project/view/theme.dart';
 class HomePage extends StatefulWidget {
   const HomePage({Key? key, this.loginState}) : super(key: key);
   final ApplicationLoginState? loginState;
+  
 
   @override
   HomePage_State createState() => HomePage_State();
@@ -18,8 +20,11 @@ class HomePage extends StatefulWidget {
 
 // ignore: camel_case_types
 class HomePage_State extends State<HomePage> {
-  
 
+  // référence à la bdd
+  final ref = FirebaseFirestore.instance.collection('Notes');
+  
+  
 
   @override
   Widget build(BuildContext context) {
@@ -40,14 +45,30 @@ class HomePage_State extends State<HomePage> {
                 style: HeadingStyle), 
 
               Flexible(
-                child: GridView.builder(gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2), itemCount: 10,
-                                          itemBuilder: (_,index){
-                                            return Container(
-                                              margin: EdgeInsets.all(10),
-                                              height: 150,
-                                              color: Colors.grey
-                                            );
-                                          }),
+                child: StreamBuilder(
+                  stream: ref.snapshots(),
+                  builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                    return GridView.builder(gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2), 
+                    
+                                              itemCount: snapshot.hasData?snapshot.data!.docs.length : 0,
+                                              itemBuilder: (_,index){
+                                                return Container(
+                                                  margin: EdgeInsets.all(10),
+                                                  height: 150,
+                                                  color: Colors.grey,
+                                                  child: Column(
+                                                    children: [
+                                                      Text(snapshot.data!.docs[index].get('title')),
+                                                      Text(snapshot.data!.docs[index].get('note')),
+                                                      Text(DateTime.fromMicrosecondsSinceEpoch(snapshot.data!.docs[index].get('date').microsecondsSinceEpoch).toString()),
+                                                      Text(snapshot.data!.docs[index].get('time'))
+                                                      
+                                                      ]
+                                                    ,)
+                                                );
+                                              });
+                  }
+                ),
               ),
             ],
           ),
