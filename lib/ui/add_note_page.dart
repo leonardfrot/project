@@ -13,16 +13,39 @@ import 'package:project/view/theme.dart';
 import 'floatingActionButton.dart';
 
 class AddNotePage extends StatefulWidget {
-  const AddNotePage({Key? key, this.loginState}) : super(key: key);
+  AddNotePage({Key? key, this.loginState, this.noteToEdit}) : super(key: key);
   final ApplicationLoginState? loginState;
+
+  // il est présent seulement quand on édite la page
+  DocumentSnapshot? noteToEdit;
 
   @override
   State<AddNotePage> createState() => _AddNotePageState();
 }
 
 class _AddNotePageState extends State<AddNotePage> {
-  final TextEditingController titleController = TextEditingController();
-  final TextEditingController noteController = TextEditingController();
+  late TextEditingController titleController = TextEditingController();
+  late TextEditingController noteController = TextEditingController();
+  late String buttonName;
+  late bool updating;
+
+  @override
+  void initState(){
+    if(widget.noteToEdit!= null){
+      titleController = TextEditingController(text: widget.noteToEdit!.get('title'));
+      noteController = TextEditingController(text: widget.noteToEdit!.get('note'));
+      _selectedDate = DateTime.fromMicrosecondsSinceEpoch(widget.noteToEdit!.get('date').microsecondsSinceEpoch);
+      _alertTime =  widget.noteToEdit!.get('time');
+      buttonName = "update";
+      updating = true;
+    }
+
+    else{
+      buttonName = "créer";
+      updating = false;
+    }
+    super.initState();
+  }
 
   DateTime _selectedDate = DateTime.now();
   late String _alertTime =
@@ -72,7 +95,7 @@ class _AddNotePageState extends State<AddNotePage> {
                 children: [
                   _colorPalette(),
                   GestureDetector(
-                    onTap: () => _validateDate(),
+                    onTap: updating?() => _updateNote(): ()=> _insertNote() ,
                     child: Container(
                         width: 60,
                         height: 60,
@@ -82,10 +105,13 @@ class _AddNotePageState extends State<AddNotePage> {
                         child: Align(
                           alignment: Alignment.center,
                           child: Text(
-                            "Créer",
+                            buttonName,
                             style: TextStyle(color: Colors.white),
                             textAlign: TextAlign.center,
-                          ),
+                          )
+                          
+                          
+                           
                         )),
                   )
                 ],
@@ -108,8 +134,8 @@ class _AddNotePageState extends State<AddNotePage> {
       ),
       actions: const [
         Icon(
-          Icons.person,
-          size: 20,
+          Icons.delete
+          ,
         ),
         SizedBox(
           width: 20,
@@ -157,7 +183,7 @@ class _AddNotePageState extends State<AddNotePage> {
             minute: int.parse(_alertTime.split(":")[1].split(" ")[0])));
   }
 
-  _validateDate() async {
+  _insertNote() async {
     print("veuillez sélectionner une date");
     if (titleController.text.isEmpty || noteController.text.isEmpty) {
       
@@ -173,6 +199,13 @@ class _AddNotePageState extends State<AddNotePage> {
 
       Get.back();
     }
+  }
+
+  _updateNote() async{
+    widget.noteToEdit!.reference.update({
+      'title' : titleController.text
+    });
+    Get.back();
   }
 
   _colorPalette() {

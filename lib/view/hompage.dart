@@ -52,19 +52,24 @@ class HomePage_State extends State<HomePage> {
                     
                                               itemCount: snapshot.hasData?snapshot.data!.docs.length : 0,
                                               itemBuilder: (_,index){
-                                                return Container(
-                                                  margin: EdgeInsets.all(10),
-                                                  height: 150,
-                                                  color: Colors.grey,
-                                                  child: Column(
-                                                    children: [
-                                                      Text(snapshot.data!.docs[index].get('title')),
-                                                      Text(snapshot.data!.docs[index].get('note')),
-                                                      Text(DateTime.fromMicrosecondsSinceEpoch(snapshot.data!.docs[index].get('date').microsecondsSinceEpoch).toString()),
-                                                      Text(snapshot.data!.docs[index].get('time'))
-                                                      
-                                                      ]
-                                                    ,)
+                                                return GestureDetector(
+                                                  onTap: (){
+                                                    Get.to(AddNotePage(noteToEdit: snapshot.data!.docs[index]));
+                                                  } ,
+                                                  child: Container(
+                                                    margin: EdgeInsets.all(10),
+                                                    height: 150,
+                                                    color: Colors.grey,
+                                                    child: Column(
+                                                      children: [
+                                                        Text(snapshot.data!.docs[index].get('title')),
+                                                        Text(snapshot.data!.docs[index].get('note')),
+                                                        Text(DateTime.fromMicrosecondsSinceEpoch(snapshot.data!.docs[index].get('date').microsecondsSinceEpoch).toString()),
+                                                        Text(snapshot.data!.docs[index].get('time'))
+                                                        
+                                                        ]
+                                                      ,)
+                                                  ),
                                                 );
                                               });
                   }
