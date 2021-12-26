@@ -56,7 +56,7 @@ class _AddNotePageState extends State<AddNotePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Colors.black,
+        backgroundColor: _selectedColor==0?Colors.blue: _selectedColor==1?Colors.pink:Colors.yellow,
         appBar: _appBar(),
         body: Container(
           padding: const EdgeInsets.only(left: 20, right: 20),
