@@ -10,20 +10,16 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'authentication/authentication.dart';
 import 'authentication/widget.dart';
 
-
-
-
 Future<void> main() async {
-  
   WidgetsFlutterBinding.ensureInitialized();
   // on doit initialiser getStorage pour le stockage à l'entry point et il doit être asynchrone
   await GetStorage.init();
   runApp(
-  
     ChangeNotifierProvider(
       create: (context) => ApplicationState(),
       builder: (context, _) => MyApp(),
-    ),);
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -31,10 +27,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
-      
       theme: ThemeService().theme,
       title: 'Note App',
-      
       home: const LoginPage(),
     );
   }
@@ -51,8 +45,6 @@ class LoginPage extends StatelessWidget {
       ),
       body: ListView(
         children: <Widget>[
-        
-          
           // Add from here
           Consumer<ApplicationState>(
             builder: (context, appState, _) => Authentication(
@@ -72,7 +64,6 @@ class LoginPage extends StatelessWidget {
     );
   }
 }
-
 
 class ApplicationState extends ChangeNotifier {
   ApplicationState() {
@@ -157,14 +148,3 @@ class ApplicationState extends ChangeNotifier {
     FirebaseAuth.instance.signOut();
   }
 }
-
-
-
-
-
-
-
-
-
-
-

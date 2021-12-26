@@ -11,10 +11,8 @@ class MyApp2 extends StatelessWidget {
     return GetMaterialApp(
       title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,
-      
       theme: ThemeService().theme,
       home: const HomePage(),
-      
     );
   }
 }

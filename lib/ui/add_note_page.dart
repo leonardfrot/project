@@ -30,17 +30,18 @@ class _AddNotePageState extends State<AddNotePage> {
   late bool updating;
 
   @override
-  void initState(){
-    if(widget.noteToEdit!= null){
-      titleController = TextEditingController(text: widget.noteToEdit!.get('title'));
-      noteController = TextEditingController(text: widget.noteToEdit!.get('note'));
-      _selectedDate = DateTime.fromMicrosecondsSinceEpoch(widget.noteToEdit!.get('date').microsecondsSinceEpoch);
-      _alertTime =  widget.noteToEdit!.get('time');
+  void initState() {
+    if (widget.noteToEdit != null) {
+      titleController =
+          TextEditingController(text: widget.noteToEdit!.get('title'));
+      noteController =
+          TextEditingController(text: widget.noteToEdit!.get('note'));
+      _selectedDate = DateTime.fromMicrosecondsSinceEpoch(
+          widget.noteToEdit!.get('date').microsecondsSinceEpoch);
+      _alertTime = widget.noteToEdit!.get('time');
       buttonName = "update";
       updating = true;
-    }
-
-    else{
+    } else {
       buttonName = "créer";
       updating = false;
     }
@@ -95,7 +96,7 @@ class _AddNotePageState extends State<AddNotePage> {
                 children: [
                   _colorPalette(),
                   GestureDetector(
-                    onTap: updating?() => _updateNote(): ()=> _insertNote() ,
+                    onTap: updating ? () => _updateNote() : () => _insertNote(),
                     child: Container(
                         width: 60,
                         height: 60,
@@ -103,16 +104,12 @@ class _AddNotePageState extends State<AddNotePage> {
                             borderRadius: BorderRadius.circular(40),
                             color: Colors.blue),
                         child: Align(
-                          alignment: Alignment.center,
-                          child: Text(
-                            buttonName,
-                            style: TextStyle(color: Colors.white),
-                            textAlign: TextAlign.center,
-                          )
-                          
-                          
-                           
-                        )),
+                            alignment: Alignment.center,
+                            child: Text(
+                              buttonName,
+                              style: TextStyle(color: Colors.white),
+                              textAlign: TextAlign.center,
+                            ))),
                   )
                 ],
               )
@@ -132,14 +129,14 @@ class _AddNotePageState extends State<AddNotePage> {
           size: 20,
         ),
       ),
-      actions: const [
-        Icon(
-          Icons.delete
-          ,
-        ),
-        SizedBox(
-          width: 20,
-        ),
+      actions: [
+        updating
+            ? GestureDetector(
+                onTap: () => _deleteNote(),
+                child: const Icon(Icons.delete, size: 30))
+            : Container(),
+        GestureDetector(
+            onTap: () => null, child: const Icon(Icons.photo, size: 30))
       ],
     );
   }
@@ -170,7 +167,6 @@ class _AddNotePageState extends State<AddNotePage> {
         _alertTime = _formatedTime;
       });
     }
-    ;
   }
 
   _showTimePicker() {
@@ -186,7 +182,6 @@ class _AddNotePageState extends State<AddNotePage> {
   _insertNote() async {
     print("veuillez sélectionner une date");
     if (titleController.text.isEmpty || noteController.text.isEmpty) {
-      
       Get.snackbar(
         "Required",
         "Certain champs sont vide",
@@ -194,17 +189,24 @@ class _AddNotePageState extends State<AddNotePage> {
         backgroundColor: Colors.red,
       );
     } else {
-
       await addNoteToGuest();
 
       Get.back();
     }
   }
 
-  _updateNote() async{
+  _updateNote() async {
     widget.noteToEdit!.reference.update({
-      'title' : titleController.text
+      'title': titleController.text,
+      'note': noteController.text,
+      'date': _selectedDate,
+      'time': _alertTime
     });
+    Get.back();
+  }
+
+  _deleteNote() async {
+    widget.noteToEdit!.reference.delete();
     Get.back();
   }
 
@@ -245,19 +247,12 @@ class _AddNotePageState extends State<AddNotePage> {
     );
   }
 
-  Future<DocumentReference>? addNoteToGuest(){
+  Future<DocumentReference>? addNoteToGuest() {
     return FirebaseFirestore.instance.collection('Notes').add({
-      'title' : titleController.text,
-      'note' : noteController.text,
-      'date' : _selectedDate,
-      'time' : _alertTime
-
+      'title': titleController.text,
+      'note': noteController.text,
+      'date': _selectedDate,
+      'time': _alertTime
     });
-
-    
-
-
-
-    
   }
 }

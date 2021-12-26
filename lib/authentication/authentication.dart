@@ -9,9 +9,6 @@ import 'package:project/ui/show_notes.dart';
 import 'package:project/view/hompage.dart';
 import 'package:project/view/theme.dart';
 
-
-
-
 enum ApplicationLoginState {
   loggedOut,
   emailAddress,
@@ -102,24 +99,22 @@ class Authentication extends StatelessWidget {
           },
         );
       case ApplicationLoginState.loggedIn:
-          
-         return Row(
+        return Row(
           children: [
             Padding(
               padding: const EdgeInsets.only(left: 24, bottom: 8),
               child: StyledButton(
                 onPressed: () {
-                  
-                  Get.to(HomePage(loginState: loginState,));
+                  Get.to(HomePage(
+                    loginState: loginState,
+                  ));
                 },
                 child: const Text('Connecter au note app'),
               ),
             ),
           ],
         );
-        
-      
-    
+
       default:
         return Row(
           children: const [
@@ -442,24 +437,27 @@ class _PasswordFormState extends State<PasswordForm> {
     );
   }
 }
-_appBar(){
-    return AppBar(
-      leading: GestureDetector(
-        onTap:(){
-          
-          print ("tapped");
-          ThemeService().switchTheme();
-        
 
-        },
-        child: const Icon(Icons.nightlight_round, size: 20, ),
-        ),
-
-        actions:const [
-          Icon(Icons.person, size: 20, ),
-
-          SizedBox(width: 20, ), 
-        
-        ],
-      );
+_appBar() {
+  return AppBar(
+    leading: GestureDetector(
+      onTap: () {
+        print("tapped");
+        ThemeService().switchTheme();
+      },
+      child: const Icon(
+        Icons.nightlight_round,
+        size: 20,
+      ),
+    ),
+    actions: const [
+      Icon(
+        Icons.person,
+        size: 20,
+      ),
+      SizedBox(
+        width: 20,
+      ),
+    ],
+  );
 }
