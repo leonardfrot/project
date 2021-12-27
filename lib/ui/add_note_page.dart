@@ -39,6 +39,7 @@ class _AddNotePageState extends State<AddNotePage> {
       _selectedDate = DateTime.fromMicrosecondsSinceEpoch(
           widget.noteToEdit!.get('date').microsecondsSinceEpoch);
       _alertTime = widget.noteToEdit!.get('time');
+      _selectedColor = widget.noteToEdit!.get('color');
       buttonName = "update";
       updating = true;
     } else {
