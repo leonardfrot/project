@@ -1,7 +1,10 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_connect/http/src/utils/utils.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:project/authentication/authentication.dart';
 import 'package:project/services/theme_service.dart';
@@ -28,6 +31,7 @@ class _AddNotePageState extends State<AddNotePage> {
   late TextEditingController noteController = TextEditingController();
   late String buttonName;
   late bool updating;
+  File? image;
 
   @override
   void initState() {
@@ -45,6 +49,7 @@ class _AddNotePageState extends State<AddNotePage> {
     } else {
       buttonName = "créer";
       updating = false;
+      
     }
     super.initState();
   }
@@ -73,7 +78,8 @@ class _AddNotePageState extends State<AddNotePage> {
               MyFromular(
                 hint: "Notes",
                 controller: noteController,
-                height: 400,
+                height: image== null? 400 : 200,
+                
               ),
               MyFromular(
                 hint: DateFormat.yMd().format(_selectedDate),
@@ -114,8 +120,19 @@ class _AddNotePageState extends State<AddNotePage> {
                             ))),
                   )
                 ],
-              )
-            ],
+              ),
+
+               image!= null? Align(
+                 alignment: Alignment.center,
+                 child: Image.file(
+                 image!,
+                 width: 300,
+                 height: 300,
+                 fit: BoxFit.cover,
+                            ),
+               ): Container()
+            
+            ]
           )),
         ));
   }
@@ -138,7 +155,8 @@ class _AddNotePageState extends State<AddNotePage> {
                 child: const Icon(Icons.delete, size: 30))
             : Container(),
         GestureDetector(
-            onTap: () => null, child: const Icon(Icons.photo, size: 30))
+            onTap: () => _selectImage(), 
+            child: const Icon(Icons.photo, size: 30))
       ],
     );
   }
@@ -169,6 +187,17 @@ class _AddNotePageState extends State<AddNotePage> {
         _alertTime = _formatedTime;
       });
     }
+  }
+
+  Future _selectImage() async{
+    final image = await ImagePicker().pickImage(source: ImageSource.gallery);
+    final imageTemporaly = File(image!.path);
+    
+     setState(() {
+        this.image = imageTemporaly;
+      });
+
+    
   }
 
   _showTimePicker() {
@@ -257,7 +286,8 @@ class _AddNotePageState extends State<AddNotePage> {
       'note': noteController.text,
       'date': _selectedDate,
       'time': _alertTime,
-      'color' : _selectedColor
+      'color' : _selectedColor,
+      
     });
   }
 }
