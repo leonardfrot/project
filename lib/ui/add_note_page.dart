@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -32,6 +33,10 @@ class _AddNotePageState extends State<AddNotePage> {
   late String buttonName;
   late bool updating;
   File? image;
+  String? imagePath;
+  
+  
+  
 
   @override
   void initState() {
@@ -44,6 +49,8 @@ class _AddNotePageState extends State<AddNotePage> {
           widget.noteToEdit!.get('date').microsecondsSinceEpoch);
       _alertTime = widget.noteToEdit!.get('time');
       _selectedColor = widget.noteToEdit!.get('color');
+      image = File(widget.noteToEdit!.get('image'));
+
       buttonName = "update";
       updating = true;
     } else {
@@ -195,6 +202,15 @@ class _AddNotePageState extends State<AddNotePage> {
     
      setState(() {
         this.image = imageTemporaly;
+        imagePath = image.path;
+        
+       
+
+        
+
+        
+        
+        
       });
 
     
@@ -287,6 +303,10 @@ class _AddNotePageState extends State<AddNotePage> {
       'date': _selectedDate,
       'time': _alertTime,
       'color' : _selectedColor,
+      'image' : imagePath
+      
+      
+      
       
     });
   }
