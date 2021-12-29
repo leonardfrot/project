@@ -34,9 +34,6 @@ class _AddNotePageState extends State<AddNotePage> {
   late bool updating;
   File? image;
   String? imagePath;
-  
-  
-  
 
   @override
   void initState() {
@@ -49,14 +46,19 @@ class _AddNotePageState extends State<AddNotePage> {
           widget.noteToEdit!.get('date').microsecondsSinceEpoch);
       _alertTime = widget.noteToEdit!.get('time');
       _selectedColor = widget.noteToEdit!.get('color');
-      image = File(widget.noteToEdit!.get('image'));
+      if (widget.noteToEdit!.get('image') != null){
+        image = File(widget.noteToEdit!.get('image'));
+
+      }else{
+        image = null;
+      }
+      
 
       buttonName = "update";
       updating = true;
     } else {
       buttonName = "créer";
       updating = false;
-      
     }
     super.initState();
   }
@@ -69,78 +71,108 @@ class _AddNotePageState extends State<AddNotePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: _selectedColor==0?Colors.blue: _selectedColor==1?Colors.pink:Colors.yellow,
+        backgroundColor: _selectedColor == 0
+            ? Colors.blue
+            : _selectedColor == 1
+                ? Colors.pink
+                : Colors.yellow,
         appBar: _appBar(),
         body: Container(
           padding: const EdgeInsets.only(left: 20, right: 20),
           child: SingleChildScrollView(
               child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              MyFromular(
-                hint: "Title",
-                controller: titleController,
-                height: 52,
-              ),
-              MyFromular(
-                hint: "Notes",
-                controller: noteController,
-                height: image== null? 400 : 200,
-                
-              ),
-              MyFromular(
-                hint: DateFormat.yMd().format(_selectedDate),
-                height: 52,
-                widget: IconButton(
-                  icon: const Icon(Icons.calendar_today_outlined),
-                  onPressed: () {
-                    _getDateFromUser();
-                  },
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                MyFromular(
+                  hint: "Title",
+                  controller: titleController,
+                  height: 52,
                 ),
-              ),
-              MyFromular(
-                  hint: _alertTime,
+                MyFromular(
+                  hint: "Notes",
+                  controller: noteController,
+                  height: image == null ? 400 : 200,
+                ),
+                MyFromular(
+                  hint: DateFormat.yMd().format(_selectedDate),
                   height: 52,
                   widget: IconButton(
-                      onPressed: () {
-                        _getTimeFromUser();
-                      },
-                      icon: Icon(Icons.access_time_rounded))),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  _colorPalette(),
-                  GestureDetector(
-                    onTap: updating ? () => _updateNote() : () => _insertNote(),
-                    child: Container(
-                        width: 60,
-                        height: 60,
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(40),
-                            color: Colors.blue),
-                        child: Align(
-                            alignment: Alignment.center,
-                            child: Text(
-                              buttonName,
-                              style: TextStyle(color: Colors.white),
-                              textAlign: TextAlign.center,
-                            ))),
-                  )
-                ],
-              ),
-
-               image!= null? Align(
-                 alignment: Alignment.center,
-                 child: Image.file(
-                 image!,
-                 width: 300,
-                 height: 300,
-                 fit: BoxFit.cover,
+                    icon: const Icon(Icons.calendar_today_outlined),
+                    onPressed: () {
+                      _getDateFromUser();
+                    },
+                  ),
+                ),
+                MyFromular(
+                    hint: _alertTime,
+                    height: 52,
+                    widget: IconButton(
+                        onPressed: () {
+                          _getTimeFromUser();
+                        },
+                        icon: Icon(Icons.access_time_rounded))),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    _colorPalette(),
+                    GestureDetector(
+                      onTap:
+                          updating ? () => _updateNote() : () => _insertNote(),
+                      child: Container(
+                          width: 60,
+                          height: 60,
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(40),
+                              color: Colors.blue),
+                          child: Align(
+                              alignment: Alignment.center,
+                              child: Text(
+                                buttonName,
+                                style: TextStyle(color: Colors.white),
+                                textAlign: TextAlign.center,
+                              ))),
+                    )
+                  ],
+                ),
+                image != null
+                    ? Align(
+                        alignment: Alignment.center,
+                        child: Stack(children: [
+                          Image.file(
+                            image!,
+                            width: 300,
+                            height: 300,
+                            fit: BoxFit.cover,
+                          ),
+                          Positioned(
+                            top: 120,
+                            left: 260,
+                            child: GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  image = null;
+                                  imagePath = null;
+                                });
+                              },
+                              child: Container(
+                                  width: 40,
+                                  height: 40,
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(40),
+                                      color: Colors.red),
+                                  child: const Align(
+                                    alignment: Alignment.center,
+                                    child: Icon(
+                                      Icons.delete,
+                                      size: 20,
+                                    ),
+                                  )),
                             ),
-               ): Container()
-            
-            ]
-          )),
+                          )
+                        ]),
+                      )
+                    : Container()
+              ])),
         ));
   }
 
@@ -162,7 +194,7 @@ class _AddNotePageState extends State<AddNotePage> {
                 child: const Icon(Icons.delete, size: 30))
             : Container(),
         GestureDetector(
-            onTap: () => _selectImage(), 
+            onTap: () => _selectImage(),
             child: const Icon(Icons.photo, size: 30))
       ],
     );
@@ -196,24 +228,14 @@ class _AddNotePageState extends State<AddNotePage> {
     }
   }
 
-  Future _selectImage() async{
+  Future _selectImage() async {
     final image = await ImagePicker().pickImage(source: ImageSource.gallery);
     final imageTemporaly = File(image!.path);
-    
-     setState(() {
-        this.image = imageTemporaly;
-        imagePath = image.path;
-        
-       
 
-        
-
-        
-        
-        
-      });
-
-    
+    setState(() {
+      this.image = imageTemporaly;
+      imagePath = image.path;
+    });
   }
 
   _showTimePicker() {
@@ -248,8 +270,8 @@ class _AddNotePageState extends State<AddNotePage> {
       'note': noteController.text,
       'date': _selectedDate,
       'time': _alertTime,
-      'color': _selectedColor
-      
+      'color': _selectedColor,
+      'image': imagePath
     });
     Get.back();
   }
@@ -302,12 +324,8 @@ class _AddNotePageState extends State<AddNotePage> {
       'note': noteController.text,
       'date': _selectedDate,
       'time': _alertTime,
-      'color' : _selectedColor,
-      'image' : imagePath
-      
-      
-      
-      
+      'color': _selectedColor,
+      'image': imagePath
     });
   }
 }
