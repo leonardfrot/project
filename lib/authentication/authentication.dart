@@ -99,20 +99,23 @@ class Authentication extends StatelessWidget {
           },
         );
       case ApplicationLoginState.loggedIn:
-        return Row(
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(left: 24, bottom: 8),
-              child: StyledButton(
-                onPressed: () {
-                  Get.to(HomePage(
-                    loginState: loginState,
-                  ));
-                },
-                child: const Text('Connecter au note app'),
+        return Container(
+          height: 200,
+          child: Center(
+            
+            child: GestureDetector(
+              onTap:  () {
+                      Get.to(HomePage(
+                        loginState: loginState,
+                      ));
+              },
+
+              child: Text("Bienvenu, cliquez ici pour commencer")
+              
+              
+              
               ),
-            ),
-          ],
+          ),
         );
 
       default:
