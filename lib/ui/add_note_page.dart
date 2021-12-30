@@ -36,6 +36,7 @@ class _AddNotePageState extends State<AddNotePage> {
   late bool updating;
   File? image;
   String? imagePath;
+  
 
   @override
   void initState() {
@@ -198,7 +199,8 @@ class _AddNotePageState extends State<AddNotePage> {
             : Container(),
         GestureDetector(
             onTap: () => _selectImage(),
-            child: const Icon(Icons.photo, size: 30))
+            child: const Icon(Icons.photo, size: 30)),
+        GestureDetector(child: const Icon(Icons.tag),)
       ],
     );
   }
