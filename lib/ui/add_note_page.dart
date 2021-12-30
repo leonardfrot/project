@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_connect/http/src/utils/utils.dart';
@@ -19,6 +20,7 @@ import 'floatingActionButton.dart';
 class AddNotePage extends StatefulWidget {
   AddNotePage({Key? key, this.loginState, this.noteToEdit}) : super(key: key);
   final ApplicationLoginState? loginState;
+  final FirebaseAuth auth = FirebaseAuth.instance;
 
   // il est présent seulement quand on édite la page
   DocumentSnapshot? noteToEdit;
@@ -37,6 +39,7 @@ class _AddNotePageState extends State<AddNotePage> {
 
   @override
   void initState() {
+    
     if (widget.noteToEdit != null) {
       titleController =
           TextEditingController(text: widget.noteToEdit!.get('title'));
@@ -227,7 +230,6 @@ class _AddNotePageState extends State<AddNotePage> {
       });
     }
   }
-
   Future _selectImage() async {
     final image = await ImagePicker().pickImage(source: ImageSource.gallery);
     final imageTemporaly = File(image!.path);
@@ -325,7 +327,8 @@ class _AddNotePageState extends State<AddNotePage> {
       'date': _selectedDate,
       'time': _alertTime,
       'color': _selectedColor,
-      'image': imagePath
+      'image': imagePath,
+      'userId': widget.auth.currentUser!.uid
     });
   }
 }

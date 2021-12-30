@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -12,6 +13,7 @@ import 'package:project/view/theme.dart';
 class HomePage extends StatefulWidget {
   const HomePage({Key? key, this.loginState}) : super(key: key);
   final ApplicationLoginState? loginState;
+  
 
   @override
   HomePage_State createState() => HomePage_State();
@@ -20,7 +22,17 @@ class HomePage extends StatefulWidget {
 // ignore: camel_case_types
 class HomePage_State extends State<HomePage> {
   // référence à la bdd
-  final ref = FirebaseFirestore.instance.collection('Notes');
+  final User? auth = FirebaseAuth.instance.currentUser;
+  String? uid;
+  late final ref ;
+
+   @override
+  void initState() {
+      uid = FirebaseAuth.instance.currentUser?.uid;
+      ref = FirebaseFirestore.instance.collection('Notes').where('userId', isEqualTo: uid );
+  }
+
+   
 
   @override
   Widget build(BuildContext context) {
@@ -40,6 +52,7 @@ class HomePage_State extends State<HomePage> {
             child: StreamBuilder(
                 stream: ref.snapshots(),
                 builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                  
                   return GridView.builder(
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 2),
@@ -49,7 +62,7 @@ class HomePage_State extends State<HomePage> {
                         return GestureDetector(
                           onTap: () {
                             Get.to(AddNotePage(
-                                noteToEdit: snapshot.data!.docs[index]));
+                                noteToEdit: snapshot.data!.docs[index], loginState: widget.loginState,));
                           },
                           child: Container(
                               margin: EdgeInsets.all(10),
@@ -75,7 +88,7 @@ class HomePage_State extends State<HomePage> {
       ),
 
       floatingActionButton: MyFloatiatingActionButton(
-          label: "+ ajouter", onTap: () => Get.to(AddNotePage)),
+          label: "+ ajouter", onTap: () => Get.to(AddNotePage(loginState: widget.loginState,))),
     );
   }
 
