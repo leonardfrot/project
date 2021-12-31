@@ -68,6 +68,7 @@ class _AddNotePageState extends State<AddNotePage> {
   }
 
   DateTime _selectedDate = DateTime.now();
+  
   late String _alertTime =
       DateFormat("hh:mm:a").format(DateTime.now()).toString();
   int _selectedColor = 0;
@@ -330,7 +331,9 @@ class _AddNotePageState extends State<AddNotePage> {
       'time': _alertTime,
       'color': _selectedColor,
       'image': imagePath,
-      'userId': widget.auth.currentUser!.uid
+      'userId': widget.auth.currentUser!.uid,
+      'createdDate' : DateTime.now()
+      
     });
   }
 }

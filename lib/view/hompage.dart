@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/date_time_patterns.dart';
 import 'package:intl/intl.dart';
 import 'package:project/authentication/authentication.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -54,31 +55,79 @@ class HomePage_State extends State<HomePage> {
                 builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
                   
                   return GridView.builder(
+                      
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 2),
                       itemCount:
                           snapshot.hasData ? snapshot.data!.docs.length : 0,
                       itemBuilder: (_, index) {
                         return GestureDetector(
+                         
                           onTap: () {
                             Get.to(AddNotePage(
                                 noteToEdit: snapshot.data!.docs[index], loginState: widget.loginState,));
                           },
                           child: Container(
+                            
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(15),
+                                color: snapshot.data!.docs[index].get('color') == 0? Colors.blue: snapshot.data!.docs[index].get('color') == 1? Colors.pink: Colors.yellow,
+                                
+                              ),
                               margin: EdgeInsets.all(10),
                               height: 150,
-                              color: snapshot.data!.docs[index].get('color') == 0? Colors.blue: snapshot.data!.docs[index].get('color') == 1? Colors.pink: Colors.yellow,
+                              
                               child: Column(
+                                
                                 children: [
-                                  Text(snapshot.data!.docs[index].get('title')),
-                                  Text(snapshot.data!.docs[index].get('note')),
-                                  Text(DateTime.fromMicrosecondsSinceEpoch(
+                                  Text(snapshot.data!.docs[index].get('title'),
+                                  style: const TextStyle(
+                                    fontSize: 25,
+                                    fontWeight: FontWeight.bold,
+                                    
+                                    
+                                    
+                                  ),
+                                  
+                                  
+                                  
+                                  ),
+
+                                  Text( "Created : " + DateFormat('yyyy-MM-dd  kk:mm').format(DateTime.fromMicrosecondsSinceEpoch(
+                                          snapshot.data!.docs[index]
+                                              .get('createdDate')
+                                              .microsecondsSinceEpoch))
+                                      .toString(),
+                                      style: const TextStyle(
+                                        height: 2,
+                                        fontSize: 12,
+                                        fontStyle: FontStyle.italic
+                                    
+                                    
+                                  ),
+                                      
+                                      ),
+
+                               
+                                  
+                                  Text( "Do before : " + DateFormat('yyyy-MM-dd  kk:mm').format(DateTime.fromMicrosecondsSinceEpoch(
                                           snapshot.data!.docs[index]
                                               .get('date')
-                                              .microsecondsSinceEpoch)
-                                      .toString()),
-                                  Text(snapshot.data!.docs[index].get('time'))
+                                              .microsecondsSinceEpoch))
+                                      .toString(),
+                                      style: const TextStyle(
+                                        height: 2,
+                                        fontSize: 12,
+                                        fontStyle: FontStyle.italic
+                                    
+                                    
+                                  ),
+                                      
+                                      ),
+                                  
+                                  
                                 ],
+                                
                               )),
                         );
                       });
