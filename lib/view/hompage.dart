@@ -14,7 +14,6 @@ import 'package:project/view/theme.dart';
 class HomePage extends StatefulWidget {
   const HomePage({Key? key, this.loginState}) : super(key: key);
   final ApplicationLoginState? loginState;
-  
 
   @override
   HomePage_State createState() => HomePage_State();
@@ -25,15 +24,15 @@ class HomePage_State extends State<HomePage> {
   // référence à la bdd
   final User? auth = FirebaseAuth.instance.currentUser;
   String? uid;
-  late final ref ;
+  late final ref;
 
-   @override
+  @override
   void initState() {
-      uid = FirebaseAuth.instance.currentUser?.uid;
-      ref = FirebaseFirestore.instance.collection('Notes').where('userId', isEqualTo: uid );
+    uid = FirebaseAuth.instance.currentUser?.uid;
+    ref = FirebaseFirestore.instance
+        .collection('Notes')
+        .where('userId', isEqualTo: uid);
   }
-
-   
 
   @override
   Widget build(BuildContext context) {
@@ -53,81 +52,98 @@ class HomePage_State extends State<HomePage> {
             child: StreamBuilder(
                 stream: ref.snapshots(),
                 builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-                  
                   return GridView.builder(
-                      
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 2),
                       itemCount:
                           snapshot.hasData ? snapshot.data!.docs.length : 0,
                       itemBuilder: (_, index) {
                         return GestureDetector(
-                         
                           onTap: () {
                             Get.to(AddNotePage(
-                                noteToEdit: snapshot.data!.docs[index], loginState: widget.loginState,));
+                              noteToEdit: snapshot.data!.docs[index],
+                              loginState: widget.loginState,
+                            ));
                           },
                           child: Container(
-                            
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(15),
-                                color: snapshot.data!.docs[index].get('color') == 0? Colors.blue: snapshot.data!.docs[index].get('color') == 1? Colors.pink: Colors.yellow,
-                                
+                                color:
+                                    snapshot.data!.docs[index].get('color') == 0
+                                        ? Colors.blue
+                                        : snapshot.data!.docs[index]
+                                                    .get('color') ==
+                                                1
+                                            ? Colors.pink
+                                            : Colors.yellow,
                               ),
                               margin: EdgeInsets.all(10),
                               height: 150,
-                              
                               child: Column(
-                                
                                 children: [
-                                  Text(snapshot.data!.docs[index].get('title'),
-                                  style: const TextStyle(
-                                    fontSize: 25,
-                                    fontWeight: FontWeight.bold,
-                                    
-                                    
-                                    
+                                  Text(
+                                    snapshot.data!.docs[index].get('title'),
+                                    style: const TextStyle(
+                                      fontSize: 25,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
-                                  
-                                  
-                                  
-                                  ),
-
-                                  Text( "Created : " + DateFormat('yyyy-MM-dd  kk:mm').format(DateTime.fromMicrosecondsSinceEpoch(
-                                          snapshot.data!.docs[index]
-                                              .get('createdDate')
-                                              .microsecondsSinceEpoch))
-                                      .toString(),
-                                      style: const TextStyle(
+                                  Text(
+                                    "Created : " +
+                                        DateFormat('yyyy-MM-dd  kk:mm')
+                                            .format(DateTime
+                                                .fromMicrosecondsSinceEpoch(
+                                                    snapshot.data!.docs[index]
+                                                        .get('createdDate')
+                                                        .microsecondsSinceEpoch))
+                                            .toString(),
+                                    style: const TextStyle(
                                         height: 2,
                                         fontSize: 12,
-                                        fontStyle: FontStyle.italic
-                                    
-                                    
+                                        fontStyle: FontStyle.italic),
                                   ),
-                                      
-                                      ),
-
-                               
-                                  
-                                  Text( "Do before : " + DateFormat('yyyy-MM-dd  kk:mm').format(DateTime.fromMicrosecondsSinceEpoch(
-                                          snapshot.data!.docs[index]
-                                              .get('date')
-                                              .microsecondsSinceEpoch))
-                                      .toString(),
-                                      style: const TextStyle(
+                                  Text(
+                                    "Do before : " +
+                                        DateFormat('yyyy-MM-dd  kk:mm')
+                                            .format(DateTime
+                                                .fromMicrosecondsSinceEpoch(
+                                                    snapshot.data!.docs[index]
+                                                        .get('date')
+                                                        .microsecondsSinceEpoch))
+                                            .toString(),
+                                    style: const TextStyle(
                                         height: 2,
                                         fontSize: 12,
-                                        fontStyle: FontStyle.italic
-                                    
-                                    
+                                        fontStyle: FontStyle.italic),
                                   ),
-                                      
-                                      ),
-                                  
-                                  
+                                  Flexible(
+                                      child: GridView.builder(
+                                          itemCount: snapshot.data!.docs[index]
+                                              .get('tags')
+                                              .length,
+                                          gridDelegate:
+                                              SliverGridDelegateWithFixedCrossAxisCount(
+                                                  crossAxisCount: 3,
+                                                  childAspectRatio:
+                                                      MediaQuery.of(context)
+                                                              .size
+                                                              .width /
+                                                          (MediaQuery.of(
+                                                                      context)
+                                                                  .size
+                                                                  .height /
+                                                              5)),
+                                          itemBuilder: (_, index2) {
+                                            return Container(
+                                              
+                                              margin: EdgeInsets.all(2),
+                                              decoration: BoxDecoration(borderRadius: BorderRadius.circular(15), color: Colors.red),
+                                              child: Text("#" +snapshot
+                                                  .data!.docs[index]
+                                                  .get('tags')[index2]),
+                                            );
+                                          }))
                                 ],
-                                
                               )),
                         );
                       });
@@ -137,7 +153,10 @@ class HomePage_State extends State<HomePage> {
       ),
 
       floatingActionButton: MyFloatiatingActionButton(
-          label: "+ ajouter", onTap: () => Get.to(AddNotePage(loginState: widget.loginState,))),
+          label: "+ ajouter",
+          onTap: () => Get.to(AddNotePage(
+                loginState: widget.loginState,
+              ))),
     );
   }
 

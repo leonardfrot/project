@@ -1,10 +1,12 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:textfield_tags/textfield_tags.dart';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+
 import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
@@ -36,11 +38,17 @@ class _AddNotePageState extends State<AddNotePage> {
   late bool updating;
   File? image;
   String? imagePath;
-  
+  List<String> tags = [];
+  late bool tagging = false;
+
+  DateTime _selectedDate = DateTime.now();
+
+  late String _alertTime =
+      DateFormat("hh:mm:a").format(DateTime.now()).toString();
+  int _selectedColor = 0;
 
   @override
   void initState() {
-    
     if (widget.noteToEdit != null) {
       titleController =
           TextEditingController(text: widget.noteToEdit!.get('title'));
@@ -50,13 +58,21 @@ class _AddNotePageState extends State<AddNotePage> {
           widget.noteToEdit!.get('date').microsecondsSinceEpoch);
       _alertTime = widget.noteToEdit!.get('time');
       _selectedColor = widget.noteToEdit!.get('color');
-      if (widget.noteToEdit!.get('image') != null){
-        image = File(widget.noteToEdit!.get('image'));
+      List temp;
+      temp = widget.noteToEdit!.get('tags');
 
-      }else{
+      for (var i = 0; i< temp.length; i++){
+        tags.add(temp[i].toString());
+      }
+
+      tags.length>0?tagging= true: tagging = false;
+
+
+      if (widget.noteToEdit!.get('image') != null) {
+        image = File(widget.noteToEdit!.get('image'));
+      } else {
         image = null;
       }
-      
 
       buttonName = "update";
       updating = true;
@@ -66,12 +82,6 @@ class _AddNotePageState extends State<AddNotePage> {
     }
     super.initState();
   }
-
-  DateTime _selectedDate = DateTime.now();
-  
-  late String _alertTime =
-      DateFormat("hh:mm:a").format(DateTime.now()).toString();
-  int _selectedColor = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -88,6 +98,45 @@ class _AddNotePageState extends State<AddNotePage> {
               child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                tagging?TextFieldTags(
+                    initialTags: tags,
+                    tagsStyler: TagsStyler(
+                      showHashtag : true,
+                      tagTextStyle: const TextStyle(color: Colors.white),
+                      tagDecoration: BoxDecoration(
+                        color: Colors.black,
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                      tagCancelIcon: Icon(Icons.cancel,
+                          size: 16.0,
+                          color: Color.fromARGB(255, 235, 214, 214)),
+                      tagPadding: const EdgeInsets.all(10.0),
+                    ),
+                    textFieldStyler: TextFieldStyler(
+                      hintText :'entrez les tag ici',
+                      textFieldFilled: false,
+                      helperText: "",
+                      textFieldFocusedBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Colors.black, width: 3.0),
+                      ),
+                      textFieldBorder: const UnderlineInputBorder(
+                        borderSide: BorderSide(color: Colors.black, width: 3.0),
+                      ),
+                    ),
+                    onTag: (tag) {
+                      tags.add(tag);
+                      
+                    
+                    },
+                    onDelete: (tag) {
+                      tags.remove(tag);
+                    },
+                    validator: (tag) {
+                      if (tag.length > 15) {
+                        return "Le tag est trop long";
+                      }
+                      return null;
+                    }): Container(),
                 MyFromular(
                   hint: "Title",
                   controller: titleController,
@@ -201,7 +250,18 @@ class _AddNotePageState extends State<AddNotePage> {
         GestureDetector(
             onTap: () => _selectImage(),
             child: const Icon(Icons.photo, size: 30)),
-        GestureDetector(child: const Icon(Icons.tag),)
+        GestureDetector(
+          onTap:() => setState(() {
+            
+            print("tagging");
+
+            
+            tagging&tags.length.isEqual(0)?tagging=false:tagging=true;
+
+
+          }),
+          child: const Icon(Icons.tag),
+        )
       ],
     );
   }
@@ -210,7 +270,7 @@ class _AddNotePageState extends State<AddNotePage> {
     DateTime? _pickerDate = await showDatePicker(
         context: context,
         initialDate: DateTime.now(),
-        firstDate: DateTime(2015),
+        firstDate: DateTime.now(),
         lastDate: DateTime(2100));
 
     if (_pickerDate != null) {
@@ -233,6 +293,7 @@ class _AddNotePageState extends State<AddNotePage> {
       });
     }
   }
+
   Future _selectImage() async {
     final image = await ImagePicker().pickImage(source: ImageSource.gallery);
     final imageTemporaly = File(image!.path);
@@ -276,7 +337,8 @@ class _AddNotePageState extends State<AddNotePage> {
       'date': _selectedDate,
       'time': _alertTime,
       'color': _selectedColor,
-      'image': imagePath
+      'image': imagePath,
+      'tags': tags
     });
     Get.back();
   }
@@ -332,8 +394,8 @@ class _AddNotePageState extends State<AddNotePage> {
       'color': _selectedColor,
       'image': imagePath,
       'userId': widget.auth.currentUser!.uid,
-      'createdDate' : DateTime.now()
-      
+      'createdDate': DateTime.now(),
+      'tags' : tags
     });
   }
 }
