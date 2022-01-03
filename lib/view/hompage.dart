@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
 import 'package:intl/date_time_patterns.dart';
 import 'package:intl/intl.dart';
@@ -135,12 +136,14 @@ class HomePage_State extends State<HomePage> {
                                                               5)),
                                           itemBuilder: (_, index2) {
                                             return Container(
-                                              
                                               margin: EdgeInsets.all(2),
-                                              decoration: BoxDecoration(borderRadius: BorderRadius.circular(15), color: Colors.red),
-                                              child: Text("#" +snapshot
-                                                  .data!.docs[index]
-                                                  .get('tags')[index2]),
+                                              decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(15),
+                                                  color: Colors.red),
+                                              child: Text("#" +
+                                                  snapshot.data!.docs[index]
+                                                      .get('tags')[index2]),
                                             );
                                           }))
                                 ],
@@ -163,9 +166,31 @@ class HomePage_State extends State<HomePage> {
   _appBar() {
     return AppBar(
       leading: GestureDetector(
-        onTap: () {
+        onTap: () async {
           print("tapped");
-          ThemeService().switchTheme();
+          //ThemeService().switchTheme();
+          FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+              FlutterLocalNotificationsPlugin();
+
+          AndroidInitializationSettings initializationSettingsAndroid =
+              AndroidInitializationSettings('@mipmap/ic_launcher');
+
+          InitializationSettings initializationSettings =
+              InitializationSettings(android: initializationSettingsAndroid);
+
+          const AndroidNotificationDetails androidPlatformChannelSpecifics =
+              AndroidNotificationDetails(
+            '1',
+            'my channel name',
+            channelDescription: 'your channel description',
+            importance: Importance.max,
+            icon: '@mipmap/ic_launcher'
+          );
+          const NotificationDetails platformChannelSpecifics =
+              NotificationDetails(android: androidPlatformChannelSpecifics);
+          await flutterLocalNotificationsPlugin.show(
+              0, 'plain title', 'plain body', platformChannelSpecifics,
+              payload: 'item x');
         },
         child: const Icon(
           Icons.nightlight_round,

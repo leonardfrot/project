@@ -47,6 +47,8 @@ dependencies:
 
   textfield_tags: ^1.4.2
 
+  flutter_local_notifications: ^9.2.0
+
   
  
   
