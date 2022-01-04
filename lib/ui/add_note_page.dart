@@ -17,13 +17,14 @@ import 'package:get/get.dart';
 import 'package:project/ui/input.dart';
 import 'package:project/view/hompage.dart';
 import 'package:project/view/theme.dart';
-
+import 'package:uuid/uuid.dart';
 import 'floatingActionButton.dart';
 
 class AddNotePage extends StatefulWidget {
   AddNotePage({Key? key, this.loginState, this.noteToEdit}) : super(key: key);
   final ApplicationLoginState? loginState;
   final FirebaseAuth auth = FirebaseAuth.instance;
+  
 
   // il est présent seulement quand on édite la page
   DocumentSnapshot? noteToEdit;
@@ -42,6 +43,8 @@ class _AddNotePageState extends State<AddNotePage> {
   List<String> tags = [];
   late bool tagging = false;
   var helper;
+  var uuid;
+  late String id;
 
   DateTime _selectedDate = DateTime.now();
 
@@ -85,6 +88,9 @@ class _AddNotePageState extends State<AddNotePage> {
 
     helper = NotificationHelper();
     helper.initializeNotification();
+
+    uuid = Uuid();
+    id = uuid.v4();
 
 
     super.initState();
@@ -338,9 +344,12 @@ class _AddNotePageState extends State<AddNotePage> {
         backgroundColor: Colors.red,
       );
     } else {
+
+      String title = "La note est arrivé en terme";
+      String body = "la note " + titleController.text + " arrive au bout"; 
       
       await addNoteToGuest();
-       helper.showScheduledNotification(scheduledDate: _selectedDate.add(Duration(seconds: 2)));
+       helper.showScheduledNotification(title: title, body: body, scheduledDate: _selectedDate.add(Duration(seconds: 2)));
 
       
 
@@ -406,7 +415,9 @@ class _AddNotePageState extends State<AddNotePage> {
   }
 
   Future<DocumentReference>? addNoteToGuest() {
+    
     return FirebaseFirestore.instance.collection('Notes').add({
+      'uuid' : id,
       'title': titleController.text,
       'note': noteController.text,
       'date': _selectedDate,

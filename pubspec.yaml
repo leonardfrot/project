@@ -41,7 +41,7 @@ dependencies:
   provider: ^5.0.0
   firebase_auth: ^1.0.0
   timezone: ^0.8.0
-
+  uuid: 3.0.5
   google_fonts:
 
   image_picker: ^0.8.3+1
