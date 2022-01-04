@@ -9,8 +9,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'authentication/authentication.dart';
 import 'authentication/widget.dart';
+import 'package:timezone/data/latest.dart' as tz;
 
 Future<void> main() async {
+  tz.initializeTimeZones();
   WidgetsFlutterBinding.ensureInitialized();
   // on doit initialiser getStorage pour le stockage à l'entry point et il doit être asynchrone
   await GetStorage.init();

@@ -174,7 +174,7 @@ class HomePage_State extends State<HomePage> {
         onTap: () async {
           print("tapped");
           ThemeService().switchTheme();
-          helper.showNotification();
+          helper.showScheduledNotification(scheduledDate: DateTime.now().add(Duration(seconds: 2)));
         },
         child: const Icon(
           Icons.nightlight_round,

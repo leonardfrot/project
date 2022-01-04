@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:project/notification/notification.dart';
 import 'package:textfield_tags/textfield_tags.dart';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -40,6 +41,7 @@ class _AddNotePageState extends State<AddNotePage> {
   String? imagePath;
   List<String> tags = [];
   late bool tagging = false;
+  var helper;
 
   DateTime _selectedDate = DateTime.now();
 
@@ -80,6 +82,11 @@ class _AddNotePageState extends State<AddNotePage> {
       buttonName = "créer";
       updating = false;
     }
+
+    helper = NotificationHelper();
+    helper.initializeNotification();
+
+
     super.initState();
   }
 
@@ -290,7 +297,14 @@ class _AddNotePageState extends State<AddNotePage> {
     } else {
       setState(() {
         _alertTime = _formatedTime;
+        int minute = int.parse(_alertTime.split(":")[1].split(" ")[0]);
+        _selectedDate = DateTime( _selectedDate.year, _selectedDate.month, 
+        _selectedDate.day, 
+        int.parse(_alertTime.split(":")[0]),
+         int.parse(_alertTime.split(":")[1].split(" ")[0]), 0, 0, 0 );
       });
+
+      print(_selectedDate);
     }
   }
 
@@ -324,7 +338,11 @@ class _AddNotePageState extends State<AddNotePage> {
         backgroundColor: Colors.red,
       );
     } else {
+      
       await addNoteToGuest();
+       helper.showScheduledNotification(scheduledDate: _selectedDate.add(Duration(seconds: 2)));
+
+      
 
       Get.back();
     }
@@ -397,5 +415,7 @@ class _AddNotePageState extends State<AddNotePage> {
       'createdDate': DateTime.now(),
       'tags' : tags
     });
+
+    
   }
 }
