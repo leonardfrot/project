@@ -6,6 +6,7 @@ import 'package:intl/date_time_patterns.dart';
 import 'package:intl/intl.dart';
 import 'package:project/authentication/authentication.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:project/notification/notification.dart';
 
 import 'package:project/services/theme_service.dart';
 import 'package:project/ui/add_note_page.dart';
@@ -26,6 +27,7 @@ class HomePage_State extends State<HomePage> {
   final User? auth = FirebaseAuth.instance.currentUser;
   String? uid;
   late final ref;
+  var helper;
 
   @override
   void initState() {
@@ -33,6 +35,9 @@ class HomePage_State extends State<HomePage> {
     ref = FirebaseFirestore.instance
         .collection('Notes')
         .where('userId', isEqualTo: uid);
+    helper = NotificationHelper();
+    
+    helper.initializeNotification();
   }
 
   @override
@@ -168,29 +173,8 @@ class HomePage_State extends State<HomePage> {
       leading: GestureDetector(
         onTap: () async {
           print("tapped");
-          //ThemeService().switchTheme();
-          FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-              FlutterLocalNotificationsPlugin();
-
-          AndroidInitializationSettings initializationSettingsAndroid =
-              AndroidInitializationSettings('@mipmap/ic_launcher');
-
-          InitializationSettings initializationSettings =
-              InitializationSettings(android: initializationSettingsAndroid);
-
-          const AndroidNotificationDetails androidPlatformChannelSpecifics =
-              AndroidNotificationDetails(
-            '1',
-            'my channel name',
-            channelDescription: 'your channel description',
-            importance: Importance.max,
-            icon: '@mipmap/ic_launcher'
-          );
-          const NotificationDetails platformChannelSpecifics =
-              NotificationDetails(android: androidPlatformChannelSpecifics);
-          await flutterLocalNotificationsPlugin.show(
-              0, 'plain title', 'plain body', platformChannelSpecifics,
-              payload: 'item x');
+          ThemeService().switchTheme();
+          helper.showNotification();
         },
         child: const Icon(
           Icons.nightlight_round,
