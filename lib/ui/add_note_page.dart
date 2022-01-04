@@ -358,6 +358,8 @@ class _AddNotePageState extends State<AddNotePage> {
       'image': imagePath,
       'tags': tags
     });
+
+    helper.showScheduledNotification(scheduledDate: _selectedDate.add(Duration(seconds: 2)));
     Get.back();
   }
 
