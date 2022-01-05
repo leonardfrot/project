@@ -6,6 +6,7 @@ import 'package:intl/date_time_patterns.dart';
 import 'package:intl/intl.dart';
 import 'package:project/authentication/authentication.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:project/main.dart';
 import 'package:project/notification/notification.dart';
 
 import 'package:project/services/theme_service.dart';
@@ -24,18 +25,23 @@ class HomePage extends StatefulWidget {
 // ignore: camel_case_types
 class HomePage_State extends State<HomePage> {
   // référence à la bdd
+  
+  
   final User? auth = FirebaseAuth.instance.currentUser;
+  final FirebaseAuth? log = FirebaseAuth.instance;
+  
   String? uid;
   late final ref;
   var helper;
 
   @override
   void initState() {
-    uid = FirebaseAuth.instance.currentUser?.uid;
+    uid = log!.currentUser?.uid;
     ref = FirebaseFirestore.instance
         .collection('Notes')
         .where('userId', isEqualTo: uid);
     helper = NotificationHelper();
+    
     
     helper.initializeNotification();
   }
@@ -172,15 +178,17 @@ class HomePage_State extends State<HomePage> {
     return AppBar(
       leading: GestureDetector(
         onTap: () async {
-          print("tapped");
-          ThemeService().switchTheme();
-          helper.showScheduledNotification(scheduledDate: DateTime.now().add(Duration(seconds: 2)));
+          Get.to(LoginPage());
+          
+          
         },
         child: const Icon(
-          Icons.nightlight_round,
+          Icons.logout,
           size: 20,
         ),
       ),
     );
   }
 }
+
+

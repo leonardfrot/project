@@ -89,8 +89,12 @@ class _AddNotePageState extends State<AddNotePage> {
     helper = NotificationHelper();
     helper.initializeNotification();
 
+   
     uuid = Uuid();
-    id = uuid.v4();
+
+     updating?id=widget.noteToEdit!.get("uuid"):id = uuid.v4();
+
+    
 
 
     super.initState();
@@ -184,6 +188,7 @@ class _AddNotePageState extends State<AddNotePage> {
                     _colorPalette(),
                     GestureDetector(
                       onTap:
+                          
                           updating ? () => _updateNote() : () => _insertNote(),
                       child: Container(
                           width: 60,
@@ -298,48 +303,100 @@ class _AddNotePageState extends State<AddNotePage> {
   _getTimeFromUser() async {
     var pickedTime = await _showTimePicker();
     String _formatedTime = pickedTime.format(context);
-    if (pickedTime == null) {
+    print(_formatedTime);
+    if (pickedTime ==null) {
+      Get.snackbar(
+        "Required",
+        "pas le temps",
+        snackPosition: SnackPosition.TOP,
+        backgroundColor: Colors.red,
+      );
       print("pas de temps");
     } else {
       setState(() {
         _alertTime = _formatedTime;
         int minute = int.parse(_alertTime.split(":")[1].split(" ")[0]);
+        int hourBetween0and12 = int.parse(_alertTime.split(":")[0]);
+        int hour;
+        bool pm = false;
+
+
+        _alertTime.split(":")[1].split(" ")[1]== "PM"? pm = true: pm = false;
+
+        pm?hour= hourBetween0and12 + 12: hour = hourBetween0and12;
+
+        print(hour);
+
+
         _selectedDate = DateTime( _selectedDate.year, _selectedDate.month, 
         _selectedDate.day, 
-        int.parse(_alertTime.split(":")[0]),
-         int.parse(_alertTime.split(":")[1].split(" ")[0]), 0, 0, 0 );
-      });
+        hour,
+         minute, 0,  0 );
+
+        if(_selectedDate.isBefore(DateTime.now())){
+          Get.snackbar(
+        "Required",
+        "Date must be after now",
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+      );
+
+        }
+
+      }
+      
+      );
 
       print(_selectedDate);
     }
   }
 
+  
+
   Future _selectImage() async {
     final image = await ImagePicker().pickImage(source: ImageSource.gallery);
-    final imageTemporaly = File(image!.path);
+    if(image == null){
+      Get.snackbar(
+        "Required",
+        "please select an image",
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+      );
+      
+    }else{
+      final imageTemporaly = File(image.path);
 
     setState(() {
       this.image = imageTemporaly;
       imagePath = image.path;
     });
+    }
+    
   }
 
   _showTimePicker() {
+    
+    print(_alertTime);
+
     return showTimePicker(
+        
+        
         initialEntryMode: TimePickerEntryMode.input,
         context: context,
+        
         initialTime: TimeOfDay(
             // on adapte au pattern d'alert time
-            hour: int.parse(_alertTime.split(":")[0]),
-            minute: int.parse(_alertTime.split(":")[1].split(" ")[0])));
+            hour:   updating? _alertTime.split(":")[1].split(" ")[1]== "PM"? int.parse(_alertTime.split(":")[0])+12: int.parse(_alertTime.split(":")[0])+12:_alertTime.split(":")[2] == "PM"? int.parse(_alertTime.split(":")[0])+12: int.parse(_alertTime.split(":")[0]),
+            minute: int.parse(_alertTime.split(":")[1].split(" ")[0])+1));
   }
+
 
   _insertNote() async {
     print("veuillez sélectionner une date");
-    if (titleController.text.isEmpty || noteController.text.isEmpty) {
+    if (titleController.text.isEmpty || noteController.text.isEmpty || _selectedDate.isBefore(DateTime.now())) {
       Get.snackbar(
         "Required",
-        "Certain champs sont vide",
+        "Certain champs sont vide ou faux",
         snackPosition: SnackPosition.BOTTOM,
         backgroundColor: Colors.red,
       );
@@ -349,6 +406,9 @@ class _AddNotePageState extends State<AddNotePage> {
       String body = "la note " + titleController.text + " arrive au bout"; 
       
       await addNoteToGuest();
+
+      helper.initNote(id);
+        
        helper.showScheduledNotification(title: title, body: body, scheduledDate: _selectedDate.add(Duration(seconds: 2)));
 
       
@@ -358,7 +418,15 @@ class _AddNotePageState extends State<AddNotePage> {
   }
 
   _updateNote() async {
-    widget.noteToEdit!.reference.update({
+    if(_selectedDate.isBefore(DateTime.now())){
+      Get.snackbar(
+        "Required",
+        "Certain champs sont vide ou faux",
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+      );
+    }else{
+       widget.noteToEdit!.reference.update({
       'title': titleController.text,
       'note': noteController.text,
       'date': _selectedDate,
@@ -367,9 +435,18 @@ class _AddNotePageState extends State<AddNotePage> {
       'image': imagePath,
       'tags': tags
     });
+    
+    String title = "La note est arrivé en terme";
+      String body = "la note " + titleController.text + " arrive au bout"; 
+     helper.initNote(id);
+        
+    helper.showScheduledNotification(title: title, body: body, scheduledDate: _selectedDate.add(Duration(seconds: 2)));
 
-    helper.showScheduledNotification(scheduledDate: _selectedDate.add(Duration(seconds: 2)));
+
     Get.back();
+
+    }
+   
   }
 
   _deleteNote() async {
@@ -429,6 +506,11 @@ class _AddNotePageState extends State<AddNotePage> {
       'tags' : tags
     });
 
+
     
   }
+
+  
 }
+
+
