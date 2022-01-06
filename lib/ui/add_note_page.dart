@@ -49,7 +49,7 @@ class _AddNotePageState extends State<AddNotePage> {
   DateTime _selectedDate = DateTime.now();
 
   late String _alertTime =
-      DateFormat("hh:mm:a").format(DateTime.now()).toString();
+      DateFormat("hh:mm a").format(DateTime.now()).toString();
   int _selectedColor = 0;
 
   @override
@@ -300,6 +300,25 @@ class _AddNotePageState extends State<AddNotePage> {
     }
   }
 
+   _showTimePicker() {
+    
+    print(_alertTime);
+
+    return showTimePicker(
+        
+        
+        initialEntryMode: TimePickerEntryMode.input,
+        context: context,
+        
+        initialTime: TimeOfDay(
+            // on adapte au pattern d'alert time
+            hour:   _alertTime.split(":")[1].split(" ")[1] == "PM"? int.parse(_alertTime.split(":")[0])+12: int.parse(_alertTime.split(":")[0]),
+            minute: int.parse(_alertTime.split(":")[1].split(" ")[0] )
+            
+            ));
+  }
+
+
   _getTimeFromUser() async {
     var pickedTime = await _showTimePicker();
     String _formatedTime = pickedTime.format(context);
@@ -315,13 +334,13 @@ class _AddNotePageState extends State<AddNotePage> {
     } else {
       setState(() {
         _alertTime = _formatedTime;
-        int minute = int.parse(_alertTime.split(":")[1].split(" ")[0]);
+        int minute = int.parse(_alertTime.split(":")[1].split(" ")[0] );
         int hourBetween0and12 = int.parse(_alertTime.split(":")[0]);
         int hour;
         bool pm = false;
 
 
-        _alertTime.split(":")[1].split(" ")[1]== "PM"? pm = true: pm = false;
+       _alertTime.split(":")[1].split(" ")[1] == "PM"? pm = true: pm = false;
 
         pm?hour= hourBetween0and12 + 12: hour = hourBetween0and12;
 
@@ -351,6 +370,8 @@ class _AddNotePageState extends State<AddNotePage> {
     }
   }
 
+
+
   
 
   Future _selectImage() async {
@@ -374,21 +395,7 @@ class _AddNotePageState extends State<AddNotePage> {
     
   }
 
-  _showTimePicker() {
-    
-    print(_alertTime);
-
-    return showTimePicker(
-        
-        
-        initialEntryMode: TimePickerEntryMode.input,
-        context: context,
-        
-        initialTime: TimeOfDay(
-            // on adapte au pattern d'alert time
-            hour:   updating? _alertTime.split(":")[1].split(" ")[1]== "PM"? int.parse(_alertTime.split(":")[0])+12: int.parse(_alertTime.split(":")[0])+12:_alertTime.split(":")[2] == "PM"? int.parse(_alertTime.split(":")[0])+12: int.parse(_alertTime.split(":")[0]),
-            minute: int.parse(_alertTime.split(":")[1].split(" ")[0])+1));
-  }
+ 
 
 
   _insertNote() async {

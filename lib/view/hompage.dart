@@ -27,7 +27,7 @@ class HomePage_State extends State<HomePage> {
   // référence à la bdd
   
   
-  final User? auth = FirebaseAuth.instance.currentUser;
+  
   final FirebaseAuth? log = FirebaseAuth.instance;
   
   String? uid;
@@ -178,9 +178,9 @@ class HomePage_State extends State<HomePage> {
     return AppBar(
       leading: GestureDetector(
         onTap: () async {
-          Get.to(LoginPage());
-          
-          
+         
+            _signOut();
+           Get.to(LoginPage());
         },
         child: const Icon(
           Icons.logout,
@@ -188,7 +188,18 @@ class HomePage_State extends State<HomePage> {
         ),
       ),
     );
+
+
+ 
+
   }
+
+  Future<void> _signOut() async {
+await log!.signOut();
+
 }
+}
+
+
 
 
