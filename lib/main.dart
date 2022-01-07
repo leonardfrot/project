@@ -10,6 +10,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'authentication/authentication.dart';
 import 'authentication/widget.dart';
 import 'package:timezone/data/latest.dart' as tz;
+import 'package:get/get.dart';
+
+import 'view/hompage.dart';
 
 Future<void> main() async {
   tz.initializeTimeZones();
@@ -80,6 +83,7 @@ class ApplicationState extends ChangeNotifier {
         _loginState = ApplicationLoginState.loggedIn;
       } else {
         _loginState = ApplicationLoginState.loggedOut;
+        
       }
       notifyListeners();
     });
@@ -125,6 +129,8 @@ class ApplicationState extends ChangeNotifier {
         email: email,
         password: password,
       );
+      Get.to(HomePage()    
+                      );
     } on FirebaseAuthException catch (e) {
       errorCallback(e);
     }
@@ -148,5 +154,7 @@ class ApplicationState extends ChangeNotifier {
 
   void signOut() {
     FirebaseAuth.instance.signOut();
+    
+    startLoginFlow();
   }
 }

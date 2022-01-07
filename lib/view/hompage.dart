@@ -27,7 +27,7 @@ class HomePage_State extends State<HomePage> {
   // référence à la bdd
   
   
-  
+  late ApplicationState state;
   final FirebaseAuth? log = FirebaseAuth.instance;
   
   String? uid;
@@ -44,6 +44,8 @@ class HomePage_State extends State<HomePage> {
     
     
     helper.initializeNotification();
+
+    state = ApplicationState();
   }
 
   @override
@@ -180,7 +182,10 @@ class HomePage_State extends State<HomePage> {
         onTap: () async {
          
             _signOut();
+            
            Get.to(LoginPage());
+           
+    
         },
         child: const Icon(
           Icons.logout,
