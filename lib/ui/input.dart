@@ -7,42 +7,42 @@ class MyFromular extends StatelessWidget {
   final Widget? widget;
   final double height;
 
-  const MyFromular({ Key? key, required this.hint, this.controller, this.widget, required this.height}) : super(key: key);
-  
+  const MyFromular(
+      {Key? key,
+      required this.hint,
+      this.controller,
+      this.widget,
+      required this.height})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final TextEditingController _textEditingController =
+        TextEditingController();
     return Container(
       child: Column(children: [
-          widget== null?Container(): Container(child: widget),
-          Container(
-              height: height,
-              decoration: BoxDecoration(border: Border.all()),
-              child: TextFormField(
+        widget == null ? Container() : Container(child: widget),
+        Container(
+          height: height,
+          decoration: BoxDecoration(border: Border.all()),
+          child: TextFormField(
+            // il est readonly seulement si un widget est passé en paramètre
+            readOnly: widget == null ? false : true,
 
-                  // il est readonly seulement si un widget est passé en paramètre
-                  readOnly: widget==null?false:true,
+            keyboardType: TextInputType.multiline,
+            minLines: 1, //Normal textInputField will be displayed
+            maxLines: 50,
+            autofocus: false,
+            cursorColor: Colors.blue,
+            controller: controller,
 
-
-                   keyboardType: TextInputType.multiline,
-                   minLines: 1,//Normal textInputField will be displayed
-                  maxLines: 50,
-                  autofocus: false,
-                  cursorColor: Colors.blue,
-                  controller: controller,
-                  decoration: InputDecoration(hintText: hint),
-
-                  ),
-
-                  
-                  ),
-                  
-                  
-                  SizedBox(height: 10,),
-          
-          
-          ]),
-        
-        );
+            decoration: InputDecoration(hintText: hint),
+          ),
+        ),
+        SizedBox(
+          height: 10,
+        ),
+      ]),
+    );
   }
 }
