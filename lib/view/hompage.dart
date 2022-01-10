@@ -6,7 +6,7 @@ import 'package:intl/date_time_patterns.dart';
 import 'package:intl/intl.dart';
 import 'package:project/authentication/authentication.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:project/main.dart';
+import 'package:project/view/main.dart';
 import 'package:project/notification/notification.dart';
 
 import 'package:project/services/theme_service.dart';

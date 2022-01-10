@@ -7,8 +7,8 @@ import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart'; // new
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'authentication/authentication.dart';
-import 'authentication/widget.dart';
+import '../authentication/authentication.dart';
+import '../authentication/widget.dart';
 import 'package:timezone/data/latest.dart' as tz;
 
 Future<void> main() async {
