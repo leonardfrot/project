@@ -310,9 +310,10 @@ class _AddNotePageState extends State<AddNotePage> {
         initialEntryMode: TimePickerEntryMode.input,
         context: context,
         
+        
         initialTime: TimeOfDay(
             // on adapte au pattern d'alert time
-            hour:   _alertTime.split(":")[1].split(" ")[1] == "PM"? int.parse(_alertTime.split(":")[0])+12: int.parse(_alertTime.split(":")[0]),
+            hour:   _alertTime.split(":")[1].split(" ")[1] == "PM" && int.parse(_alertTime.split(":")[0])!=12 ? int.parse(_alertTime.split(":")[0])+12: int.parse(_alertTime.split(":")[0]),
             minute: int.parse(_alertTime.split(":")[1].split(" ")[0] )
             
             ));
@@ -321,8 +322,7 @@ class _AddNotePageState extends State<AddNotePage> {
 
   _getTimeFromUser() async {
     var pickedTime = await _showTimePicker();
-    String _formatedTime = pickedTime.format(context);
-    print(_formatedTime);
+    
     if (pickedTime ==null) {
       Get.snackbar(
         "Required",
@@ -333,6 +333,8 @@ class _AddNotePageState extends State<AddNotePage> {
       print("pas de temps");
     } else {
       setState(() {
+        String _formatedTime = pickedTime.format(context);
+    print(_formatedTime);
         _alertTime = _formatedTime;
         int minute = int.parse(_alertTime.split(":")[1].split(" ")[0] );
         int hourBetween0and12 = int.parse(_alertTime.split(":")[0]);
@@ -343,8 +345,10 @@ class _AddNotePageState extends State<AddNotePage> {
        _alertTime.split(":")[1].split(" ")[1] == "PM"? pm = true: pm = false;
 
         pm?hour= hourBetween0and12 + 12: hour = hourBetween0and12;
-
+        hour==12 ||hour ==24?hour = hour-12: hour = hour;
         print(hour);
+
+        
 
 
         _selectedDate = DateTime( _selectedDate.year, _selectedDate.month, 
@@ -414,9 +418,25 @@ class _AddNotePageState extends State<AddNotePage> {
       
       await addNoteToGuest();
 
+      int seq=0;
+
       helper.initNote(id);
-        
-       helper.showScheduledNotification(title: title, body: body, scheduledDate: _selectedDate.add(Duration(seconds: 2)));
+      FirebaseFirestore.instance
+        .collection('NotificationSequence')
+        .get()
+        .then((QuerySnapshot querySnapshot) {
+      DocumentSnapshot sequence = querySnapshot.docs.first;
+      seq = sequence.get('sequence');
+      int updateSeq;
+      
+      seq==null?updateSeq = 0:updateSeq = seq + 1;
+      print(seq);
+
+      sequence.reference.update({'sequence': updateSeq});
+      helper.showScheduledNotification(id: seq, title: title, body: body, scheduledDate: _selectedDate.add(Duration(seconds: 2)));
+    });
+      
+     
 
       
 
@@ -446,6 +466,7 @@ class _AddNotePageState extends State<AddNotePage> {
     String title = "La note est arrivé en terme";
       String body = "la note " + titleController.text + " arrive au bout"; 
      helper.initNote(id);
+     helper.initSequence();
         
     helper.showScheduledNotification(title: title, body: body, scheduledDate: _selectedDate.add(Duration(seconds: 2)));
 
