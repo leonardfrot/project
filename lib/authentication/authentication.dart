@@ -26,9 +26,9 @@ class Authentication extends StatelessWidget {
     required this.signInWithEmailAndPassword,
     required this.cancelRegistration,
     required this.registerAccount,
-    required this.signOut,
+    required this.signOut
   });
-
+  
   final ApplicationLoginState loginState;
   final String? email;
   final void Function() startLoginFlow;
@@ -53,21 +53,8 @@ class Authentication extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     switch (loginState) {
+     
       case ApplicationLoginState.loggedOut:
-        return Row(
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(left: 24, bottom: 8),
-              child: StyledButton(
-                onPressed: () {
-                  startLoginFlow();
-                },
-                child: const Text('RSVP'),
-              ),
-            ),
-          ],
-        );
-      case ApplicationLoginState.emailAddress:
         return EmailForm(
             callback: (email) => verifyEmail(
                 email, (e) => _showErrorDialog(context, 'Invalid email', e)));
@@ -110,7 +97,7 @@ class Authentication extends StatelessWidget {
                       ));
               },
 
-              child: Text("Bienvenu, cliquez ici pour commencer")
+              child: const Text("Welcome to the Note App")
               
               
               
@@ -233,6 +220,7 @@ class RegisterForm extends StatefulWidget {
     required this.cancel,
     required this.email,
   });
+
   final String email;
   final void Function(String email, String displayName, String password)
       registerAccount;
