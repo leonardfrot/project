@@ -24,7 +24,6 @@ class AddNotePage extends StatefulWidget {
   AddNotePage({Key? key, this.loginState, this.noteToEdit}) : super(key: key);
   final ApplicationLoginState? loginState;
   final FirebaseAuth auth = FirebaseAuth.instance;
-  
 
   // il est présent seulement quand on édite la page
   DocumentSnapshot? noteToEdit;
@@ -45,6 +44,7 @@ class _AddNotePageState extends State<AddNotePage> {
   var helper;
   var uuid;
   late String id;
+  
 
   DateTime _selectedDate = DateTime.now();
 
@@ -66,12 +66,11 @@ class _AddNotePageState extends State<AddNotePage> {
       List temp;
       temp = widget.noteToEdit!.get('tags');
 
-      for (var i = 0; i< temp.length; i++){
+      for (var i = 0; i < temp.length; i++) {
         tags.add(temp[i].toString());
       }
 
-      tags.length>0?tagging= true: tagging = false;
-
+      tags.length > 0 ? tagging = true : tagging = false;
 
       if (widget.noteToEdit!.get('image') != null) {
         image = File(widget.noteToEdit!.get('image'));
@@ -82,20 +81,18 @@ class _AddNotePageState extends State<AddNotePage> {
       buttonName = "update";
       updating = true;
     } else {
-      buttonName = "créer";
+      buttonName = "create";
       updating = false;
     }
 
     helper = NotificationHelper();
     helper.initializeNotification();
 
-   
     uuid = Uuid();
 
-     updating?id=widget.noteToEdit!.get("uuid"):id = uuid.v4();
+    updating ? id = widget.noteToEdit!.get("uuid") : id = uuid.v4();
 
     
-
 
     super.initState();
   }
@@ -115,45 +112,47 @@ class _AddNotePageState extends State<AddNotePage> {
               child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                tagging?TextFieldTags(
-                    initialTags: tags,
-                    tagsStyler: TagsStyler(
-                      showHashtag : true,
-                      tagTextStyle: const TextStyle(color: Colors.white),
-                      tagDecoration: BoxDecoration(
-                        color: Colors.black,
-                        borderRadius: BorderRadius.circular(8.0),
-                      ),
-                      tagCancelIcon: Icon(Icons.cancel,
-                          size: 16.0,
-                          color: Color.fromARGB(255, 235, 214, 214)),
-                      tagPadding: const EdgeInsets.all(10.0),
-                    ),
-                    textFieldStyler: TextFieldStyler(
-                      hintText :'entrez les tag ici',
-                      textFieldFilled: false,
-                      helperText: "",
-                      textFieldFocusedBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(color: Colors.black, width: 3.0),
-                      ),
-                      textFieldBorder: const UnderlineInputBorder(
-                        borderSide: BorderSide(color: Colors.black, width: 3.0),
-                      ),
-                    ),
-                    onTag: (tag) {
-                      tags.add(tag);
-                      
-                    
-                    },
-                    onDelete: (tag) {
-                      tags.remove(tag);
-                    },
-                    validator: (tag) {
-                      if (tag.length > 15) {
-                        return "Le tag est trop long";
-                      }
-                      return null;
-                    }): Container(),
+                tagging
+                    ? TextFieldTags(
+                        initialTags: tags,
+                        tagsStyler: TagsStyler(
+                          showHashtag: true,
+                          tagTextStyle: const TextStyle(color: Colors.white),
+                          tagDecoration: BoxDecoration(
+                            color: Colors.black,
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
+                          tagCancelIcon: Icon(Icons.cancel,
+                              size: 16.0,
+                              color: Color.fromARGB(255, 235, 214, 214)),
+                          tagPadding: const EdgeInsets.all(10.0),
+                        ),
+                        textFieldStyler: TextFieldStyler(
+                          hintText: 'entrez les tag ici',
+                          textFieldFilled: false,
+                          helperText: "",
+                          textFieldFocusedBorder: UnderlineInputBorder(
+                            borderSide:
+                                BorderSide(color: Colors.black, width: 3.0),
+                          ),
+                          textFieldBorder: const UnderlineInputBorder(
+                            borderSide:
+                                BorderSide(color: Colors.black, width: 3.0),
+                          ),
+                        ),
+                        onTag: (tag) {
+                          tags.add(tag);
+                        },
+                        onDelete: (tag) {
+                          tags.remove(tag);
+                        },
+                        validator: (tag) {
+                          if (tag.length > 15) {
+                            return "Le tag est trop long";
+                          }
+                          return null;
+                        })
+                    : Container(),
                 MyFromular(
                   hint: "Title",
                   controller: titleController,
@@ -188,7 +187,6 @@ class _AddNotePageState extends State<AddNotePage> {
                     _colorPalette(),
                     GestureDetector(
                       onTap:
-                          
                           updating ? () => _updateNote() : () => _insertNote(),
                       child: Container(
                           width: 60,
@@ -269,14 +267,8 @@ class _AddNotePageState extends State<AddNotePage> {
             onTap: () => _selectImage(),
             child: const Icon(Icons.photo, size: 30)),
         GestureDetector(
-          onTap:() => setState(() {
-            
-            print("tagging");
-
-            
-            tagging&tags.length.isEqual(0)?tagging=false:tagging=true;
-
-
+          onTap: () => setState(() {
+            tagging & tags.length.isEqual(0) ? tagging = false : tagging = true;
           }),
           child: const Icon(Icons.tag),
         )
@@ -296,115 +288,165 @@ class _AddNotePageState extends State<AddNotePage> {
         _selectedDate = _pickerDate;
       });
     } else {
-      print("veuillez sélectionner une date");
-    }
-  }
-
-   _showTimePicker() {
-    
-    print(_alertTime);
-
-    return showTimePicker(
-        
-        
-        initialEntryMode: TimePickerEntryMode.input,
-        context: context,
-        
-        
-        initialTime: TimeOfDay(
-            // on adapte au pattern d'alert time
-            hour:   _alertTime.split(":")[1].split(" ")[1] == "PM" && int.parse(_alertTime.split(":")[0])!=12 ? int.parse(_alertTime.split(":")[0])+12: int.parse(_alertTime.split(":")[0]),
-            minute: int.parse(_alertTime.split(":")[1].split(" ")[0] )
-            
-            ));
-  }
-
-
-  _getTimeFromUser() async {
-    var pickedTime = await _showTimePicker();
-    
-    if (pickedTime ==null) {
       Get.snackbar(
         "Required",
-        "pas le temps",
+        "Please select a date",
         snackPosition: SnackPosition.TOP,
         backgroundColor: Colors.red,
       );
-      print("pas de temps");
-    } else {
-      setState(() {
-        String _formatedTime = pickedTime.format(context);
-    print(_formatedTime);
-        _alertTime = _formatedTime;
-        int minute = int.parse(_alertTime.split(":")[1].split(" ")[0] );
-        int hourBetween0and12 = int.parse(_alertTime.split(":")[0]);
-        int hour;
-        bool pm = false;
-
-
-       _alertTime.split(":")[1].split(" ")[1] == "PM"? pm = true: pm = false;
-
-        pm?hour= hourBetween0and12 + 12: hour = hourBetween0and12;
-        hour==12 ||hour ==24?hour = hour-12: hour = hour;
-        print(hour);
-
-        
-
-
-        _selectedDate = DateTime( _selectedDate.year, _selectedDate.month, 
-        _selectedDate.day, 
-        hour,
-         minute, 0,  0 );
-
-        if(_selectedDate.isBefore(DateTime.now())){
-          Get.snackbar(
-        "Required",
-        "Date must be after now",
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.red,
-      );
-
-        }
-
-      }
-      
-      );
-
-      print(_selectedDate);
     }
   }
 
+  _showTimePicker() {
+    print(_alertTime);
 
+    int minute = int.parse(_alertTime.split(":")[1].split(" ")[0]);
 
-  
+    int hourBetweenOneAndTwelve = int.parse(_alertTime.split(":")[0]);
+
+    bool pm = false;
+    int hour = 0;
+
+    _alertTime.split(":")[1].split(" ")[1] == "PM" ? pm = true : pm = false;
+
+    if (pm) {
+      hour = hourBetweenOneAndTwelve + 12;
+      if (hour == 24) {
+        hour = hour - 12;
+      }
+    } else {
+      hour = hourBetweenOneAndTwelve;
+      if (hour == 12) {
+        hour = 0;
+      }
+    }
+
+    return showTimePicker(
+        initialEntryMode: TimePickerEntryMode.input,
+        context: context,
+        initialTime: TimeOfDay(
+            // on adapte au pattern d'alert time
+            hour: hour,
+            minute: int.parse(_alertTime.split(":")[1].split(" ")[0])));
+  }
+
+  _getTimeFromUser() async {
+    var pickedTime = await _showTimePicker();
+
+    if (pickedTime == null) {
+      Get.snackbar(
+        "Required",
+        "please select an hour",
+        snackPosition: SnackPosition.TOP,
+        backgroundColor: Colors.red,
+      );
+    } else {
+      setState(() {
+        String _formatedTime = pickedTime.format(context);
+
+        _alertTime = _formatedTime;
+        int minute = int.parse(_alertTime.split(":")[1].split(" ")[0]);
+
+        int hourBetweenOneAndTwelve = int.parse(_alertTime.split(":")[0]);
+
+        bool pm = false;
+        int hour = 0;
+
+        _alertTime.split(":")[1].split(" ")[1] == "PM" ? pm = true : pm = false;
+
+        if (pm) {
+          hour = hourBetweenOneAndTwelve + 12;
+          if (hour == 24) {
+            hour = hour - 12;
+          }
+        } else {
+          hour = hourBetweenOneAndTwelve;
+          if (hour == 12) {
+            hour = 0;
+          }
+        }
+
+        _selectedDate = DateTime(_selectedDate.year, _selectedDate.month,
+            _selectedDate.day, hour, minute, 0, 0);
+        print(_selectedDate);
+
+        if (_selectedDate.isBefore(DateTime.now())) {
+          Get.snackbar(
+            "Required",
+            "Date must be after now",
+            snackPosition: SnackPosition.BOTTOM,
+            backgroundColor: Colors.red,
+          );
+        }
+      });
+    }
+  }
 
   Future _selectImage() async {
     final image = await ImagePicker().pickImage(source: ImageSource.gallery);
-    if(image == null){
+    if (image == null) {
       Get.snackbar(
         "Required",
         "please select an image",
         snackPosition: SnackPosition.BOTTOM,
         backgroundColor: Colors.red,
       );
-      
-    }else{
+    } else {
       final imageTemporaly = File(image.path);
 
-    setState(() {
-      this.image = imageTemporaly;
-      imagePath = image.path;
-    });
+      setState(() {
+        this.image = imageTemporaly;
+        imagePath = image.path;
+      });
     }
-    
   }
 
- 
-
-
   _insertNote() async {
-    print("veuillez sélectionner une date");
-    if (titleController.text.isEmpty || noteController.text.isEmpty || _selectedDate.isBefore(DateTime.now())) {
+    if (titleController.text.isEmpty ||
+        noteController.text.isEmpty ||
+        _selectedDate.isBefore(DateTime.now())) {
+      Get.snackbar(
+        "Required",
+        "Certain champs sont vide ou faux",
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+      );
+    } else {
+      
+
+      await addNoteToGuest();
+
+      int seq = 0;
+
+
+      helper.initNote(id);
+      FirebaseFirestore.instance
+          .collection('NotificationSequence')
+          .get()
+          .then((QuerySnapshot querySnapshot) {
+        DocumentSnapshot sequence = querySnapshot.docs.first;
+        String title = "Alert!";
+        String body = "the note :  " + titleController.text + " is finish";
+        seq = sequence.get('sequence');
+        int updateSeq;
+
+        seq == null ? updateSeq = 0 : updateSeq = seq + 1;
+        print(seq);
+
+        sequence.reference.update({'sequence': updateSeq});
+        helper.showScheduledNotification(
+            id: seq,
+            title: title,
+            body: body,
+            scheduledDate: _selectedDate.add(Duration(seconds: 2)));
+      });
+
+      Get.back();
+    }
+  }
+
+  _updateNote() async {
+    if (_selectedDate.isBefore(DateTime.now())) {
       Get.snackbar(
         "Required",
         "Certain champs sont vide ou faux",
@@ -413,68 +455,51 @@ class _AddNotePageState extends State<AddNotePage> {
       );
     } else {
 
-      String title = "La note est arrivé en terme";
-      String body = "la note " + titleController.text + " arrive au bout"; 
-      
-      await addNoteToGuest();
-
-      int seq=0;
+      int seq = 0;
 
       helper.initNote(id);
       FirebaseFirestore.instance
-        .collection('NotificationSequence')
-        .get()
-        .then((QuerySnapshot querySnapshot) {
-      DocumentSnapshot sequence = querySnapshot.docs.first;
-      seq = sequence.get('sequence');
-      int updateSeq;
-      
-      seq==null?updateSeq = 0:updateSeq = seq + 1;
-      print(seq);
+          .collection('NotificationSequence')
+          .get()
+          .then((QuerySnapshot querySnapshot) {
+        DocumentSnapshot sequence = querySnapshot.docs.first;
+        seq = sequence.get('sequence');
+        int updateSeq;
+         String title = "Alert!";
+        String body = "the note :  " + titleController.text + " is finish";
 
-      sequence.reference.update({'sequence': updateSeq});
-      helper.showScheduledNotification(id: seq, title: title, body: body, scheduledDate: _selectedDate.add(Duration(seconds: 2)));
-    });
-      
-     
+        seq == null ? updateSeq = 0 : updateSeq = seq + 1;
+        print(seq);
 
-      
+        sequence.reference.update({'sequence': updateSeq});
+        helper.showScheduledNotification(
+            id: seq,
+            title: title,
+            body: body,
+            scheduledDate: _selectedDate.add(Duration(seconds: 2)));
+      });
+      widget.noteToEdit!.reference.update({
+        'title': titleController.text,
+        'note': noteController.text,
+        'date': _selectedDate,
+        'time': _alertTime,
+        'color': _selectedColor,
+        'image': imagePath,
+        'tags': tags
+      });
+
+      String title = "La note est arrivé en terme";
+      String body = "la note " + titleController.text + " arrive au bout";
+      helper.initNote(id);
+      helper.initSequence();
+
+      helper.showScheduledNotification(
+          title: title,
+          body: body,
+          scheduledDate: _selectedDate.add(Duration(seconds: 2)));
 
       Get.back();
     }
-  }
-
-  _updateNote() async {
-    if(_selectedDate.isBefore(DateTime.now())){
-      Get.snackbar(
-        "Required",
-        "Certain champs sont vide ou faux",
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.red,
-      );
-    }else{
-       widget.noteToEdit!.reference.update({
-      'title': titleController.text,
-      'note': noteController.text,
-      'date': _selectedDate,
-      'time': _alertTime,
-      'color': _selectedColor,
-      'image': imagePath,
-      'tags': tags
-    });
-    
-    String title = "La note est arrivé en terme";
-      String body = "la note " + titleController.text + " arrive au bout"; 
-     helper.initNote(id);
-     helper.initSequence();
-        
-    helper.showScheduledNotification(title: title, body: body, scheduledDate: _selectedDate.add(Duration(seconds: 2)));
-
-
-    Get.back();
-
-    }
-   
   }
 
   _deleteNote() async {
@@ -520,9 +545,8 @@ class _AddNotePageState extends State<AddNotePage> {
   }
 
   Future<DocumentReference>? addNoteToGuest() {
-    
     return FirebaseFirestore.instance.collection('Notes').add({
-      'uuid' : id,
+      'uuid': id,
       'title': titleController.text,
       'note': noteController.text,
       'date': _selectedDate,
@@ -531,14 +555,7 @@ class _AddNotePageState extends State<AddNotePage> {
       'image': imagePath,
       'userId': widget.auth.currentUser!.uid,
       'createdDate': DateTime.now(),
-      'tags' : tags
+      'tags': tags
     });
-
-
-    
   }
-
-  
 }
-
-
