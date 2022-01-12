@@ -4,12 +4,18 @@ import 'package:get/get.dart';
 import 'package:project/ui/add_note_page.dart';
 
 import 'package:timezone/timezone.dart' as tz;
+import 'package:uuid/uuid.dart';
 
 class NotificationHelper {
   FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
 
   DocumentSnapshot? noteToEdit;
+
+  DocumentSnapshot? sequence;
+
+ late int seq;
+ 
 
   static const AndroidNotificationDetails androidPlatformChannelSpecifics =
       AndroidNotificationDetails('1', 'my channel name',
@@ -29,6 +35,7 @@ class NotificationHelper {
     await flutterLocalNotificationsPlugin.initialize(initializationSettings,
         onSelectNotification: (payload) {
       Get.to(AddNotePage(noteToEdit: noteToEdit));
+      
     });
   }
 
@@ -42,20 +49,35 @@ class NotificationHelper {
     });
   }
 
-  Future showNotification(
-          {int id = 0, String? title, String? body, String? payload}) async =>
-      await flutterLocalNotificationsPlugin
-          .show(id, title, body, platformChannelSpecifics, payload: payload);
+  initSequence() {
+    FirebaseFirestore.instance
+        .collection('NotificationSequence')
+        .get()
+        .then((QuerySnapshot querySnapshot) {
+      sequence = querySnapshot.docs.first;
+      seq = sequence!.get('sequence');
+      
+      int? updateSeq = seq + 1;
+      
+
+      sequence!.reference.update({'sequence': updateSeq});
+    });
+  }
+
+  
 
   Future showScheduledNotification({
-    int id = 0,
+    int? id,
     String? title,
     String? body,
     String? payload,
     required DateTime scheduledDate,
-  }) async =>
-      await flutterLocalNotificationsPlugin.zonedSchedule(
-        id,
+  }) 
+  
+  async =>
+      
+      flutterLocalNotificationsPlugin.zonedSchedule(
+        id==null?0:id,
         title,
         body,
         tz.TZDateTime.from(scheduledDate, tz.local),
@@ -65,4 +87,5 @@ class NotificationHelper {
         uiLocalNotificationDateInterpretation:
             UILocalNotificationDateInterpretation.absoluteTime,
       );
+      
 }

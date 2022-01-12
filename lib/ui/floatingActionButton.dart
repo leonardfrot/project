@@ -18,8 +18,10 @@ class MyFloatiatingActionButton extends StatelessWidget {
       child: Container(
           width: 100,
           height: 60,
+          
           decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(40), color: Colors.blue),
+              borderRadius: BorderRadius.circular(40), color: Colors.black),
+              
           child: Align(
             alignment: Alignment.center,
             child: Text(
