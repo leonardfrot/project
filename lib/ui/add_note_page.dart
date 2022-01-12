@@ -193,7 +193,7 @@ class _AddNotePageState extends State<AddNotePage> {
                           height: 60,
                           decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(40),
-                              color: Colors.blue),
+                              color: Colors.black),
                           child: Align(
                               alignment: Alignment.center,
                               child: Text(
